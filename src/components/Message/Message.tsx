@@ -22,6 +22,10 @@ export interface MessageTopLevelProps extends TextMessageTopLevelProps {
   onMessageLongPress?: (message: MessageType.Any) => void
   /** Called when user taps on any message */
   onMessagePress?: (message: MessageType.Any) => void
+  /** Called when user taps on a video message */
+  onVideoPress?: (message: MessageType.Video) => void
+  /** Called when user taps on a sound message */
+  onSoundPress?: (message: MessageType.Audio) => void
   /** Customize the default bubble using this function. `child` is a content
    * you should render inside your bubble, `message` is a current message
    * (contains `author` inside) and `nextMessageInGroup` allows you to see
@@ -87,6 +91,8 @@ export const Message = React.memo(
     messageWidth,
     onMessagePress,
     onMessageLongPress,
+    onVideoPress,
+    onSoundPress,
     onPreviewDataFetched,
     renderBubble,
     renderCustomMessage,
@@ -126,7 +132,6 @@ export const Message = React.memo(
 
     const renderBubbleContainer = () => {
       const child = renderMessage()
-
       return oneOf(
         renderBubble,
         <View style={contentContainer} testID='ContentContainer'>
@@ -173,6 +178,7 @@ export const Message = React.memo(
               {...{
                 message,
                 messageWidth,
+                onVideoPress,
               }}
             />
           )(
@@ -186,6 +192,7 @@ export const Message = React.memo(
               {...{
                 message,
                 messageWidth,
+                onSoundPress,
               }}
             />
           )(

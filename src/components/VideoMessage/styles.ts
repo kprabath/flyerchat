@@ -15,21 +15,15 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
     container: {
       maxWidth: messageWidth,
       minWidth: 100,
-      borderRadius: theme.borders.messageBorderRadius,
       overflow: 'hidden',
     },
-    video: {
+    subContainer: {
       width: Math.min(messageWidth, screenWidth * 0.8),
       height: 200,
-      backgroundColor: theme.colors.background,
     },
-    thumbnail: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(0, 0, 0, 0.3)',
-      justifyContent: 'center',
-      alignItems: 'center',
+    thumbnailImage: {
+      width: '100%',
+      height: '100%',
     },
-    playButton: {
-      opacity: 0.8,
-    },
+    absoluteWrapper:{...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center'}
   }) 

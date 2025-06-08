@@ -49,6 +49,10 @@ dayjs.extend(calendar)
 export type ChatTopLevelProps = InputTopLevelProps & MessageTopLevelProps
 
 export interface ChatProps extends ChatTopLevelProps {
+  /** Called when user taps on a video message */
+  onVideoPress?: (message: MessageType.Video) => void
+  /** Called when user taps on a sound message */
+  onSoundPress?: (message: MessageType.Audio) => void
   /** Allows you to replace the default Input widget e.g. if you want to create a channel view. */
   customBottomComponent?: () => React.ReactNode
   /** If {@link ChatProps.dateFormat} and/or {@link ChatProps.timeFormat} is not enough to
@@ -119,6 +123,8 @@ export const Chat = ({
   onEndReached,
   onMessageLongPress,
   onMessagePress,
+  onVideoPress,
+  onSoundPress,
   onPreviewDataFetched,
   onSendPress,
   renderBubble,
@@ -304,6 +310,8 @@ export const Chat = ({
             showStatus,
             showUserAvatars,
             usePreviewData,
+            onVideoPress,
+            onSoundPress,
           }}
         />
       )
@@ -322,6 +330,8 @@ export const Chat = ({
       size.width,
       usePreviewData,
       user.id,
+      onVideoPress,
+      onSoundPress,
     ]
   )
 

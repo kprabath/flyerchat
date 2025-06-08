@@ -1,43 +1,59 @@
+
+import styles from './styles'
 import * as React from 'react'
-import { StyleSheet, View, Dimensions } from 'react-native'
-import Video from 'react-native-video'
+import { View, Image, Pressable } from 'react-native'
+import { PlayButton } from '../PlayButton/PlayButton'
 
 import { MessageType } from '../../types'
 import { ThemeContext } from '../../utils'
-import styles from './styles'
 
 export interface VideoMessageProps {
   message: MessageType.DerivedVideo
   messageWidth: number
+  onVideoPress?: (message: MessageType.Video) => void
 }
 
+// render a generic video component here
+
 export const VideoMessage = React.memo(
-  ({ message, messageWidth }: VideoMessageProps) => {
+  ({ message, messageWidth, onVideoPress }: VideoMessageProps) => {
     const theme = React.useContext(ThemeContext)
-    const [paused, setPaused] = React.useState(true)
-    const { container, video } = styles({
+
+    const [generatedThumbnail, setGeneratedThumbNail] = React.useState(null);
+
+
+    // TO: DO if no thumnail is available generate the thmumnail
+    // pass a functon called generate thumnail from props which will generate the thumnail 
+    // using native android and ios
+    // and it will get updated 
+
+    const { container, thumbnailImage, subContainer , absoluteWrapper } = styles({
       message,
       messageWidth,
       theme,
     })
 
+    const handlePress = () => {
+      if (onVideoPress) {
+        onVideoPress(message)
+      }
+    }
+
     return (
-      <View style={container}>
-        <Video
-          source={{ uri: message.uri }}
-          style={video}
-          resizeMode="contain"
-          paused={paused}
-          controls={true}
-          repeat={false}
-          onLoad={(data) => {
-            // Optional: Handle video loaded
-          }}
-          onError={(error) => {
-            console.error('Video Error:', error)
-          }}
-        />
-      </View>
+      <Pressable style={container} onPress={handlePress}>
+        <View style={subContainer}>
+          {message?.thumbnailUrl ? (
+            <Image
+              source={{ uri: message.thumbnailUrl }}
+              style={thumbnailImage}
+              resizeMode='cover'
+            />
+          ) : null}
+          <View style={absoluteWrapper}>
+            <PlayButton size={40} />
+          </View>
+        </View>
+      </Pressable>
     )
   }
-) 
+)

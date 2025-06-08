@@ -14,8 +14,7 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
       maxWidth: messageWidth,
       minWidth: 100,
       padding: 12,
-      borderRadius: theme.borders.messageBorderRadius,
-      backgroundColor: theme.colors.inputBackground,
+      backgroundColor: theme.colors.primary,
     },
     controls: {
       flexDirection: 'row',
@@ -28,6 +27,6 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
     icon: {
       width: 24,
       height: 24,
-      tintColor: theme.colors.primary,
+      tintColor: theme.colors.secondary,
     },
   }) 

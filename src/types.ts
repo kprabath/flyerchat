@@ -115,6 +115,7 @@ export namespace MessageType {
     uri: string
     width?: number
     duration?: number
+    thumbnailUrl?: string
   }
 
   export interface Video extends Base, PartialVideo {

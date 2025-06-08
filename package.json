@@ -7,8 +7,8 @@
     "type": "git",
     "url": "https://github.com/flyerhq/react-native-chat-ui.git"
   },
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/src/index.js",
+  "types": "lib/src/index.d.ts",
   "author": "Oleksandr Demchenko <alexdemchenko@yahoo.com>",
   "contributors": [
     "Vitalii Danylov <vitaliidanylov1992@gmail.com>",
@@ -31,7 +31,8 @@
     "access": "public"
   },
   "scripts": {
-    "compile": "rm -rf lib && tsc -p . && copyup src/assets/*.png lib",
+    "compile": "rm -rf lib && tsc -p . && mkdir -p lib/src/assets && cp -r src/assets/* lib/src/assets/",
+    "watch": "tsc -p . --watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "prepare": "yarn compile",
     "test": "jest",
@@ -42,7 +43,8 @@
     "@flyerhq/react-native-link-preview": "^1.5.2",
     "dayjs": "^1.10.7",
     "react-native-image-viewing": "^0.2.1",
-    "react-native-parsed-text": "^0.0.22"
+    "react-native-parsed-text": "^0.0.22",
+    "react-native-sound": "^0.11.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -50,7 +52,8 @@
     "@react-native-community/eslint-config": "^3.0.1",
     "@testing-library/react-native": "^8.0.0",
     "@types/jest": "^27.0.2",
-    "@types/react-native": "^0.66.0",
+    "@types/react": "^18.2.6",
+    "@types/react-native": "^0.72.8",
     "@types/react-test-renderer": "^17.0.1",
     "babel-jest": "^27.3.1",
     "copyfiles": "^2.4.1",
@@ -58,13 +61,13 @@
     "eslint-plugin-jest": "^25.2.2",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "jest": "^27.3.1",
-    "metro-react-native-babel-preset": "^0.66.2",
-    "react": "^17.0.2",
-    "react-native": "^0.66.1",
+    "metro-react-native-babel-preset": "^0.76.9",
+    "react": "^18.3.1",
+    "react-native": "^0.75.4",
     "react-native-safe-area-context": "^3.3.2",
-    "react-test-renderer": "^17.0.2",
+    "react-test-renderer": "^18.3.1",
     "type-coverage": "^2.18.2",
-    "typescript": "^4.4.4"
+    "typescript": "5.0.4"
   },
   "peerDependencies": {
     "react": "*",

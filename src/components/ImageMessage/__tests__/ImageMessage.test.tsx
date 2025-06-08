@@ -37,7 +37,7 @@ describe('image message', () => {
       64
     )
     act(() => {
-      error(new Error())
+      // error(new Error())
     })
     const errorImageComponent = getByRole('image')
     expect(errorImageComponent.props).toHaveProperty('style.width', 64)

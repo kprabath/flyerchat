@@ -11,8 +11,10 @@ import {
 import { Avatar } from '../Avatar'
 import { FileMessage } from '../FileMessage'
 import { ImageMessage } from '../ImageMessage'
+import { SoundMessage } from '../SoundMessage/SoundMessage'
 import { StatusIcon } from '../StatusIcon'
 import { TextMessage, TextMessageTopLevelProps } from '../TextMessage'
+import { VideoMessage } from '../VideoMessage/VideoMessage'
 import styles from './styles'
 
 export interface MessageTopLevelProps extends TextMessageTopLevelProps {
@@ -43,6 +45,16 @@ export interface MessageTopLevelProps extends TextMessageTopLevelProps {
   /** Render an image message inside predefined bubble */
   renderImageMessage?: (
     message: MessageType.Image,
+    messageWidth: number
+  ) => React.ReactNode
+  /** Render a video message inside predefined bubble */
+  renderVideoMessage?: (
+    message: MessageType.Video,
+    messageWidth: number
+  ) => React.ReactNode
+  /** Render an audio message inside predefined bubble */
+  renderSoundMessage?: (
+    message: MessageType.Audio,
     messageWidth: number
   ) => React.ReactNode
   /** Render a text message inside predefined bubble */
@@ -80,6 +92,8 @@ export const Message = React.memo(
     renderCustomMessage,
     renderFileMessage,
     renderImageMessage,
+    renderVideoMessage,
+    renderSoundMessage,
     renderTextMessage,
     roundBorder,
     showAvatar,
@@ -130,15 +144,12 @@ export const Message = React.memo(
         case 'custom':
           return (
             renderCustomMessage?.(
-              // It's okay to cast here since we checked message type above
-              // type-coverage:ignore-next-line
               excludeDerivedMessageProps(message) as MessageType.Custom,
               messageWidth
             ) ?? null
           )
         case 'file':
           return oneOf(renderFileMessage, <FileMessage message={message} />)(
-            // type-coverage:ignore-next-line
             excludeDerivedMessageProps(message) as MessageType.File,
             messageWidth
           )
@@ -152,8 +163,33 @@ export const Message = React.memo(
               }}
             />
           )(
-            // type-coverage:ignore-next-line
             excludeDerivedMessageProps(message) as MessageType.Image,
+            messageWidth
+          )
+        case 'video':
+          return oneOf(
+            renderVideoMessage,
+            <VideoMessage
+              {...{
+                message,
+                messageWidth,
+              }}
+            />
+          )(
+            excludeDerivedMessageProps(message) as MessageType.Video,
+            messageWidth
+          )
+        case 'audio':
+          return oneOf(
+            renderSoundMessage,
+            <SoundMessage
+              {...{
+                message,
+                messageWidth,
+              }}
+            />
+          )(
+            excludeDerivedMessageProps(message) as MessageType.Audio,
             messageWidth
           )
         case 'text':
@@ -170,7 +206,6 @@ export const Message = React.memo(
               }}
             />
           )(
-            // type-coverage:ignore-next-line
             excludeDerivedMessageProps(message) as MessageType.Text,
             messageWidth,
             showName

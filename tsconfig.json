@@ -1,18 +1,34 @@
 {
+  "extends": "@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
-    "esModuleInterop": true,
-    "jsx": "react",
-    "lib": ["ESNext"],
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "noEmitOnError": true,
-    "outDir": "./lib",
-    "skipLibCheck": true,
-    "sourceMap": true,
+    "jsx": "react-jsx",
     "strict": true,
-    "target": "ES2018",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["src/*"]
+    },
+    "types": ["react-native", "jest"],
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2017"],
+    "moduleResolution": "node",
+    "noEmit": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "esnext",
+    "declaration": true,
+    "outDir": "lib",
+    "rootDir": ".",
+    "composite": false
   },
-  "exclude": ["**/__tests__/*"],
-  "include": ["src"]
+  "include": ["src/**/*", "jest/**/*"],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js",
+    "lib"
+  ]
 }

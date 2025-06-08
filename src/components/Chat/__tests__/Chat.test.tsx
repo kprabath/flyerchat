@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react-native'
-import * as React from 'react'
+import React from 'react'
 import { Text } from 'react-native'
 
 import {
@@ -11,8 +11,87 @@ import {
 import { l10n } from '../../../l10n'
 import { MessageType } from '../../../types'
 import { Chat } from '../Chat'
+import { ReactTestInstance } from 'react-test-renderer'
 
-describe('chat', () => {
+describe('Chat', () => {
+  it('renders empty state', () => {
+    const { getByText } = render(
+      <Chat
+        messages={[]}
+        user={{ id: '1' }}
+        onSendPress={() => {}}
+      />
+    )
+
+    expect(getByText('No messages yet')).toBeTruthy()
+  })
+
+  it('renders messages', () => {
+    const messages: MessageType.Any[] = [
+      {
+        author: { id: '1' },
+        createdAt: Date.now(),
+        id: '1',
+        text: 'Hello',
+        type: 'text',
+      },
+    ]
+
+    const { getByText } = render(
+      <Chat
+        messages={messages}
+        user={{ id: '1' }}
+        onSendPress={() => {}}
+      />
+    )
+
+    expect(getByText('Hello')).toBeTruthy()
+  })
+
+  it('calls onSendPress when send button is pressed', () => {
+    const onSendPress = jest.fn()
+    const { getByTestId } = render(
+      <Chat
+        messages={[]}
+        user={{ id: '1' }}
+        onSendPress={onSendPress}
+      />
+    )
+
+    const button = getByTestId('SendButton')
+    if (button) {
+      fireEvent.press(button)
+    }
+
+    expect(onSendPress).toHaveBeenCalled()
+  })
+
+  it('renders custom empty state', () => {
+    const { getByText } = render(
+      <Chat
+        messages={[]}
+        user={{ id: '1' }}
+        onSendPress={() => {}}
+        emptyState={<Text>Custom empty state</Text> as any}
+      />
+    )
+
+    expect(getByText('Custom empty state')).toBeTruthy()
+  })
+
+  it('renders custom bottom component', () => {
+    const { getByText } = render(
+      <Chat
+        messages={[]}
+        user={{ id: '1' }}
+        onSendPress={() => {}}
+        customBottomComponent={<Text>Custom bottom</Text> as any}
+      />
+    )
+
+    expect(getByText('Custom bottom')).toBeTruthy()
+  })
+
   it('renders image preview', () => {
     expect.assertions(1)
     const messages = [
@@ -31,7 +110,7 @@ describe('chat', () => {
       <Chat messages={messages} onSendPress={onSendPress} user={user} />
     )
     const button = getByRole('image').parent
-    fireEvent.press(button)
+    fireEvent.press(button as ReactTestInstance)
     const closeButton = getByText('✕')
     expect(closeButton).toBeDefined()
   })
@@ -151,7 +230,7 @@ describe('chat', () => {
 
   it('renders empty chat placeholder', () => {
     expect.assertions(1)
-    const messages = []
+    const messages: any[] = []
     const onSendPress = jest.fn()
     const onMessagePress = jest.fn()
     const { getByText } = render(
@@ -165,27 +244,5 @@ describe('chat', () => {
 
     const placeholder = getByText(l10n.en.emptyChatPlaceholder)
     expect(placeholder).toBeDefined()
-  })
-
-  it('renders custom bottom component', () => {
-    expect.assertions(1)
-    const customBottomComponent = jest.fn(() => <Text>Bottom</Text>)
-    const messages = []
-    const onSendPress = jest.fn()
-    const onMessagePress = jest.fn()
-    const { getByText } = render(
-      <Chat
-        {...{
-          customBottomComponent,
-          messages,
-          onMessagePress,
-          onSendPress,
-          user,
-        }}
-      />
-    )
-
-    const customComponent = getByText('Bottom')
-    expect(customComponent).toBeDefined()
   })
 })

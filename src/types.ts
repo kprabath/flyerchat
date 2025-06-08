@@ -3,12 +3,14 @@ import * as React from 'react'
 import { ColorValue, ImageURISource, TextStyle } from 'react-native'
 
 export namespace MessageType {
-  export type Any = Custom | File | Image | Text | Unsupported
+  export type Any = Custom | File | Image | Video | Audio | Text | Unsupported
 
   export type DerivedMessage =
     | DerivedCustom
     | DerivedFile
     | DerivedImage
+    | DerivedVideo
+    | DerivedAudio
     | DerivedText
     | DerivedUnsupported
   export type DerivedAny = DateHeader | DerivedMessage
@@ -17,6 +19,8 @@ export namespace MessageType {
     | PartialCustom
     | PartialFile
     | PartialImage
+    | PartialVideo
+    | PartialAudio
     | PartialText
 
   interface Base {
@@ -26,7 +30,7 @@ export namespace MessageType {
     metadata?: Record<string, any>
     roomId?: string
     status?: 'delivered' | 'error' | 'seen' | 'sending' | 'sent'
-    type: 'custom' | 'file' | 'image' | 'text' | 'unsupported'
+    type: 'custom' | 'file' | 'image' | 'video' | 'audio' | 'text' | 'unsupported'
     updatedAt?: number
   }
 
@@ -48,6 +52,14 @@ export namespace MessageType {
 
   export interface DerivedImage extends DerivedMessageProps, Image {
     type: Image['type']
+  }
+
+  export interface DerivedVideo extends DerivedMessageProps, Video {
+    type: Video['type']
+  }
+
+  export interface DerivedAudio extends DerivedMessageProps, Audio {
+    type: Audio['type']
   }
 
   export interface DerivedText extends DerivedMessageProps, Text {
@@ -92,6 +104,34 @@ export namespace MessageType {
 
   export interface Image extends Base, PartialImage {
     type: 'image'
+  }
+
+  export interface PartialVideo {
+    height?: number
+    metadata?: Record<string, any>
+    name: string
+    size: number
+    type: 'video'
+    uri: string
+    width?: number
+    duration?: number
+  }
+
+  export interface Video extends Base, PartialVideo {
+    type: 'video'
+  }
+
+  export interface PartialAudio {
+    metadata?: Record<string, any>
+    name: string
+    size: number
+    type: 'audio'
+    uri: string
+    duration?: number
+  }
+
+  export interface Audio extends Base, PartialAudio {
+    type: 'audio'
   }
 
   export interface PartialText {

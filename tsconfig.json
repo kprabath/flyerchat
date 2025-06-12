@@ -1,7 +1,5 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
     "strict": true,
     "baseUrl": ".",
     "paths": {
@@ -10,18 +8,22 @@
     "types": ["react-native", "jest"],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "isolatedModules": true,
-    "lib": ["es2017"],
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "noEmit": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "target": "esnext",
-    "declaration": true,
     "outDir": "lib",
     "rootDir": ".",
-    "composite": false
+    "composite": false,
+    "declaration": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "lib": ["ESNext"],
+    "module": "ESNext",
+    "noEmitOnError": true,
+    "sourceMap": true,
   },
   "include": ["src/**/*", "jest/**/*"],
   "exclude": [

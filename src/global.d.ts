@@ -7,3 +7,6 @@ declare module 'react-native/Libraries/Blob/Blob' {
 
   export default Blob
 }
+
+declare module "react-native-pdf" {}
+declare module "react-native-sound-player" {}

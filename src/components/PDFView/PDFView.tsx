@@ -19,7 +19,7 @@ const PDFView: React.FC<PDFViewProps> = ({ message, onClose }) => {
         </TouchableOpacity>
       </View>
       <Pdf
-        trustAllCerts = {false}
+        trustAllCerts={false}
         source={{
           uri: message.uri,
           cache: true,
@@ -27,16 +27,16 @@ const PDFView: React.FC<PDFViewProps> = ({ message, onClose }) => {
             'Cache-Control': 'no-cache',
           },
         }}
-        onLoadComplete={(numberOfPages, filePath) => {
+        onLoadComplete={(numberOfPages: number, filePath: string) => {
           console.log(`Number of pages: ${numberOfPages}`);
         }}
-        onPageChanged={(page, numberOfPages) => {
+        onPageChanged={(page: number, numberOfPages: number) => {
           console.log(`Current page: ${page}`);
         }}
-        onError={(error) => {
+        onError={(error: any) => {
           console.log('PDF Error:', error);
         }}
-        onPressLink={(uri) => {
+        onPressLink={(uri: string) => {
           console.log(`Link pressed: ${uri}`);
         }}
         style={styles.pdf}

@@ -34,8 +34,10 @@ import {
   StatusBarProps,
   Text,
   View,
+  Modal,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import PDFView from '../PDFView/PDFView'
 
 // Untestable
 /* istanbul ignore next */
@@ -170,6 +172,8 @@ export const Chat = ({
   const [isNextPageLoading, setNextPageLoading] = React.useState(false)
   const [imageViewIndex, setImageViewIndex] = React.useState(0)
   const [stackEntry, setStackEntry] = React.useState<StatusBarProps>({})
+  const [showPDFViewer, setShowPDFViewer] = React.useState(false)
+  const [selectedPDFMessage, setSelectedPDFMessage] = React.useState<MessageType.File | null>(null)
 
   const l10nValue = React.useMemo(
     () => ({ ...l10n[locale], ...unwrap(l10nOverride) }),
@@ -260,14 +264,27 @@ export const Chat = ({
     [gallery]
   )
 
+  const handlePDFPress = React.useCallback(
+    (message: MessageType.File) => {
+      setSelectedPDFMessage(message);
+      setShowPDFViewer(true);
+    },
+    []
+  );
+
   const handleMessagePress = React.useCallback(
     (message: MessageType.Any) => {
       if (message.type === 'image' && !disableImageGallery) {
         handleImagePress(message)
+      } else if (message.type === 'file' && message.mimeType?.includes('pdf')) {
+
+        console.log("message is" , message.uri)
+        handlePDFPress(message as MessageType.File);
+      } else {
+        onMessagePress?.(message)
       }
-      onMessagePress?.(message)
     },
-    [disableImageGallery, handleImagePress, onMessagePress]
+    [disableImageGallery, handleImagePress, handlePDFPress, onMessagePress]
   )
 
   // TODO: Tapping on a close button results in the next warning:
@@ -471,6 +488,21 @@ export const Chat = ({
                 />
               )}
             />
+            {showPDFViewer && selectedPDFMessage && (
+              <Modal
+                visible={showPDFViewer}
+                animationType="slide"
+                presentationStyle="fullScreen"
+              >
+                <PDFView
+                  message={selectedPDFMessage}
+                  onClose={() => {
+                    setShowPDFViewer(false)
+                    setSelectedPDFMessage(null)
+                  }}
+                />
+              </Modal>
+            )}
           </View>
         </L10nContext.Provider>
       </ThemeContext.Provider>

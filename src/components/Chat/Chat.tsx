@@ -1,3 +1,21 @@
+import { usePrevious } from '../../hooks'
+import { l10n } from '../../l10n'
+import { defaultTheme } from '../../theme'
+import { MessageType, Theme, User } from '../../types'
+import {
+  calculateChatMessages,
+  initLocale,
+  L10nContext,
+  ThemeContext,
+  unwrap,
+  UserContext,
+} from '../../utils'
+import { CircularActivityIndicator } from '../CircularActivityIndicator'
+import { Input, InputAdditionalProps, InputTopLevelProps } from '../Input'
+import { Message, MessageTopLevelProps } from '../Message'
+import ImageView from './ImageView'
+import ImageViewHeader from './ImageView.header'
+import styles from './styles'
 import {
   KeyboardAccessoryView,
   useComponentSize,
@@ -18,24 +36,6 @@ import {
   View,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
-import { usePrevious } from '../../hooks'
-import { l10n } from '../../l10n'
-import { defaultTheme } from '../../theme'
-import { MessageType, Theme, User } from '../../types'
-import {
-  calculateChatMessages,
-  initLocale,
-  L10nContext,
-  ThemeContext,
-  unwrap,
-  UserContext,
-} from '../../utils'
-import { CircularActivityIndicator } from '../CircularActivityIndicator'
-import { Input, InputAdditionalProps, InputTopLevelProps } from '../Input'
-import { Message, MessageTopLevelProps } from '../Message'
-import ImageView from './ImageView'
-import styles from './styles'
 
 // Untestable
 /* istanbul ignore next */
@@ -82,7 +82,7 @@ export interface ChatProps extends ChatTopLevelProps {
    * pagination will not be triggered. */
   isLastPage?: boolean
   /** Override the default localized copy. */
-  l10nOverride?: Partial<Record<keyof typeof l10n[keyof typeof l10n], string>>
+  l10nOverride?: Partial<Record<keyof (typeof l10n)[keyof typeof l10n], string>>
   locale?: keyof typeof l10n
   messages: MessageType.Any[]
   /** Used for pagination (infinite scroll). Called when user scrolls
@@ -102,6 +102,14 @@ export interface ChatProps extends ChatTopLevelProps {
    */
   timeFormat?: string
   user: User
+  onDownloadPress?: (
+    message:
+      | MessageType.Audio
+      | MessageType.Video
+      | MessageType.Image
+      | MessageType.File
+      | MessageType.Any
+  ) => void
 }
 
 /** Entry component, represents the complete chat */
@@ -132,6 +140,7 @@ export const Chat = ({
   renderFileMessage,
   renderImageMessage,
   renderTextMessage,
+  onDownloadPress,
   sendButtonVisibilityMode = 'editing',
   showUserAvatars = false,
   showUserNames = false,
@@ -273,6 +282,15 @@ export const Chat = ({
     ({ id }: MessageType.DerivedAny) => id,
     []
   )
+
+  const onDownloadPressLocal = React.useCallback(() => {
+    const selectedMessage = messages.find(
+      (e) => e.id === gallery?.[imageViewIndex]?.id
+    )
+    if (selectedMessage) {
+      onDownloadPress?.(selectedMessage as MessageType.Any)
+    }
+  }, [onDownloadPress])
 
   const renderItem = React.useCallback(
     ({ item: message }: { item: MessageType.DerivedAny; index: number }) => {
@@ -445,6 +463,13 @@ export const Chat = ({
               images={gallery}
               onRequestClose={handleRequestClose}
               visible={isImageViewVisible}
+              HeaderComponent={() => (
+                <ImageViewHeader
+                  showDownloadButton={!gallery?.[imageViewIndex]?.isLocal}
+                  onDownloadPress={onDownloadPressLocal}
+                  onClosePress={handleRequestClose}
+                />
+              )}
             />
           </View>
         </L10nContext.Provider>

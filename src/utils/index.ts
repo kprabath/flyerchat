@@ -230,7 +230,7 @@ export const calculateChatMessages = (
     }
 
     if (message.type === 'image') {
-      gallery = [...gallery, { id: message.id, uri: message.uri }]
+      gallery = [...gallery, { id: message.id, uri: message.uri , isLocal: message.metadata?.local, fileName: message.name }]
     }
   }
 

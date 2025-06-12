@@ -5,7 +5,8 @@ interface Props {
   imageIndex: number
   images: Array<ImageURISource | ImageRequireSource>
   onRequestClose: () => void
-  visible: boolean
+  visible: boolean;
+  HeaderComponent: ()=> React.ReactNode
 }
 
 const ImageView = (_: Props) => {

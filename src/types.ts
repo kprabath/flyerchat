@@ -160,6 +160,8 @@ export namespace MessageType {
 export interface PreviewImage {
   id: string
   uri: ImageURISource['uri']
+  isLocal?: boolean;
+  fileName?: string
 }
 
 export interface Size {

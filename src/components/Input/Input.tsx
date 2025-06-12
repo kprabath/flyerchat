@@ -6,6 +6,7 @@ import { L10nContext, ThemeContext, unwrap, UserContext } from '../../utils'
 import {
   AttachmentButton,
   AttachmentButtonAdditionalProps,
+  AttachmentButtonProps,
 } from '../AttachmentButton'
 import {
   CircularActivityIndicator,

@@ -24,25 +24,25 @@ export const SoundMessage = React.memo(
       theme,
     })
 
-    React.useEffect(() => {
-      const getDuration = async () => {
-        try {
-          // Load the sound file
-          await SoundPlayer.loadUrl(message.uri)
-          // Get the duration
-          const info = await SoundPlayer.getInfo()
-          setDuration(info.duration)
-          // Stop and reset the player
-          SoundPlayer.stop()
-        } catch (error) {
-          console.error('Failed to get sound duration:', error)
-        }
-      }
+    // React.useEffect(() => {
+    //   const getDuration = async () => {
+    //     try {
+    //       // Load the sound file
+    //       await SoundPlayer.loadUrl(message.uri)
+    //       // Get the duration
+    //       const info = await SoundPlayer.getInfo()
+    //       setDuration(info.duration)
+    //       // Stop and reset the player
+    //       SoundPlayer.stop()
+    //     } catch (error) {
+    //       console.error('Failed to get sound duration:', error)
+    //     }
+    //   }
 
-      if (!message.duration) {
-        getDuration()
-      }
-    }, [message.uri, message.duration])
+    //   if (!message.duration) {
+    //     getDuration()
+    //   }
+    // }, [message.uri, message.duration])
 
     const formatDuration = (seconds: number) => {
       const mins = Math.floor(seconds / 60)

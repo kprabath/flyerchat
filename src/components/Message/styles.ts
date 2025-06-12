@@ -22,7 +22,7 @@ const styles = ({
       justifyContent: !currentUserIsAuthor ? 'flex-end' : 'flex-start',
       flex: 1,
       flexDirection: 'row',
-      marginBottom: message.type === 'dateHeader' ? 0 : 4 + message.offset,
+      marginBottom: 10,
       marginLeft: 20,
     },
     contentContainer: {

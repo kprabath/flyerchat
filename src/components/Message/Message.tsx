@@ -15,6 +15,7 @@ import { SoundMessage } from '../SoundMessage/SoundMessage'
 import { StatusIcon } from '../StatusIcon'
 import { TextMessage, TextMessageTopLevelProps } from '../TextMessage'
 import { VideoMessage } from '../VideoMessage/VideoMessage'
+import { DeeplinkMessage } from '../Deeplink/DeeplinkMessage'
 import styles from './styles'
 
 export interface MessageTopLevelProps extends TextMessageTopLevelProps {
@@ -26,6 +27,8 @@ export interface MessageTopLevelProps extends TextMessageTopLevelProps {
   onVideoPress?: (message: MessageType.Video) => void
   /** Called when user taps on a sound message */
   onSoundPress?: (message: MessageType.Audio) => void
+  /** Called when user taps on a deeplink message */
+  onDeeplinkPress?: (message: MessageType.Deeplink) => void
   /** Customize the default bubble using this function. `child` is a content
    * you should render inside your bubble, `message` is a current message
    * (contains `author` inside) and `nextMessageInGroup` allows you to see
@@ -67,6 +70,11 @@ export interface MessageTopLevelProps extends TextMessageTopLevelProps {
     messageWidth: number,
     showName: boolean
   ) => React.ReactNode
+  /** Render a deeplink message inside predefined bubble */
+  renderDeeplinkMessage?: (
+    message: MessageType.Deeplink,
+    messageWidth: number
+  ) => React.ReactNode
   /** Show user avatars for received messages. Useful for a group chat. */
   showUserAvatars?: boolean
 }
@@ -93,6 +101,7 @@ export const Message = React.memo(
     onMessageLongPress,
     onVideoPress,
     onSoundPress,
+    onDeeplinkPress,
     onPreviewDataFetched,
     renderBubble,
     renderCustomMessage,
@@ -101,6 +110,7 @@ export const Message = React.memo(
     renderVideoMessage,
     renderSoundMessage,
     renderTextMessage,
+    renderDeeplinkMessage,
     roundBorder,
     showAvatar,
     showName,
@@ -216,6 +226,17 @@ export const Message = React.memo(
             excludeDerivedMessageProps(message) as MessageType.Text,
             messageWidth,
             showName
+          )
+        case 'deeplink':
+          return oneOf(
+            renderDeeplinkMessage,
+            <DeeplinkMessage
+              message={excludeDerivedMessageProps(message) as MessageType.Deeplink}
+              onDeeplinkPress={onDeeplinkPress}
+            />
+          )(
+            excludeDerivedMessageProps(message) as MessageType.Deeplink,
+            messageWidth
           )
         default:
           return null

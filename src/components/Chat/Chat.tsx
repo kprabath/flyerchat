@@ -55,6 +55,8 @@ export interface ChatProps extends ChatTopLevelProps {
   onVideoPress?: (message: MessageType.Video) => void
   /** Called when user taps on a sound message */
   onSoundPress?: (message: MessageType.Audio) => void
+  /** Called when user taps on a deeplink message */
+  onDeeplinkPress?: (message: MessageType.Deeplink) => void
   /** Allows you to replace the default Input widget e.g. if you want to create a channel view. */
   customBottomComponent?: () => React.ReactNode
   /** If {@link ChatProps.dateFormat} and/or {@link ChatProps.timeFormat} is not enough to
@@ -135,6 +137,7 @@ export const Chat = ({
   onMessagePress,
   onVideoPress,
   onSoundPress,
+  onDeeplinkPress,
   onPreviewDataFetched,
   onSendPress,
   renderBubble,
@@ -347,6 +350,7 @@ export const Chat = ({
             usePreviewData,
             onVideoPress,
             onSoundPress,
+            onDeeplinkPress,
           }}
         />
       )
@@ -367,6 +371,7 @@ export const Chat = ({
       user.id,
       onVideoPress,
       onSoundPress,
+      onDeeplinkPress,
     ]
   )
 

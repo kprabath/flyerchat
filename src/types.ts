@@ -3,7 +3,11 @@ import * as React from 'react'
 import { ColorValue, ImageURISource, TextStyle } from 'react-native'
 
 export namespace MessageType {
-  export type Any = Custom | File | Image | Video | Audio | Text | Unsupported
+  export type Any = Custom | File | Image | Video | Audio | Text |  Deeplink | Unsupported
+
+
+
+
 
   export type DerivedMessage =
     | DerivedCustom
@@ -13,6 +17,7 @@ export namespace MessageType {
     | DerivedAudio
     | DerivedText
     | DerivedUnsupported
+    | DerivedDeeplink
   export type DerivedAny = DateHeader | DerivedMessage
 
   export type PartialAny =
@@ -30,7 +35,7 @@ export namespace MessageType {
     metadata?: Record<string, any>
     roomId?: string
     status?: 'delivered' | 'error' | 'seen' | 'sending' | 'sent'
-    type: 'custom' | 'file' | 'image' | 'video' | 'audio' | 'text' | 'unsupported'
+    type: 'custom' | 'file' | 'image' | 'video' | 'audio' | 'text' | 'unsupported' | 'deeplink'
     updatedAt?: number
   }
 
@@ -40,6 +45,16 @@ export namespace MessageType {
     offset: number
     showName: boolean
     showStatus: boolean
+  }
+
+  export interface DerivedDeeplink extends DerivedMessageProps , Deeplink {
+    type: Deeplink['type']
+  }
+
+  export interface Deeplink extends PartialDeeplink {
+    type: 'deeplink'
+    text: string
+    url?: string
   }
 
   export interface DerivedCustom extends DerivedMessageProps, Custom {
@@ -77,6 +92,11 @@ export namespace MessageType {
 
   export interface Custom extends Base, PartialCustom {
     type: 'custom'
+  }
+
+  export interface PartialDeeplink extends Base {
+    type: 'deeplink',
+    deeplink: string
   }
 
   export interface PartialFile {

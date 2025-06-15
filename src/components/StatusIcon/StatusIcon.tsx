@@ -57,10 +57,11 @@ export const StatusIcon = React.memo(
           break
       }
     }
-
+ 
+    // no rendering this
     return currentUserIsAuthor ? (
       <View style={styles.container} testID='StatusIconContainer'>
-        {statusIcon}
+        {/* {statusIcon} */}
       </View>
     ) : null
   }

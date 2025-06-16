@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+
 import { MessageType } from '../../types';
-import { formatBytes, ThemeContext, UserContext } from '../../utils'
+import { ThemeContext } from '../../utils'
 
 interface DeeplinkMessageProps {
   message: MessageType.Deeplink;
-  onDeeplinkPress: (message: MessageType.Deeplink) => void;
+  onDeeplinkPress?: (message: MessageType.Deeplink) => void;
 }
 
 const Logo = require("../../assets/logo.png")
@@ -15,7 +16,7 @@ export const DeeplinkMessage: React.FC<DeeplinkMessageProps> = ({ message, onDee
   return (
     <TouchableOpacity 
       style={{backgroundColor: theme.colors.primary}}
-      onPress={() => onDeeplinkPress(message)}
+      onPress={() => onDeeplinkPress?.(message)}
     >
       <View style={styles.content}>
         <Image source={Logo} style = {styles.image}/>

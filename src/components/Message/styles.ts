@@ -1,6 +1,9 @@
-import { StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 
 import { MessageType, Theme } from '../../types'
+
+
+const screenWidth = Dimensions.get('screen').width
 
 const styles = ({
   currentUserIsAuthor,
@@ -23,7 +26,7 @@ const styles = ({
       flex: 1,
       flexDirection: 'row',
       marginBottom: 10,
-      marginLeft: 20,
+      marginLeft:20 ,
     },
     contentContainer: {
       backgroundColor:
@@ -50,7 +53,7 @@ const styles = ({
       marginTop: 16,
     },
     pressable: {
-      maxWidth: messageWidth,
+      maxWidth: message?.type !== "custom" ?  messageWidth : screenWidth,
     },
   })
 

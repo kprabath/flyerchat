@@ -1,6 +1,6 @@
+
 import * as React from 'react'
 import { TextInput, TextInputProps, View } from 'react-native'
-
 import { MessageType } from '../../types'
 import { L10nContext, ThemeContext, unwrap, UserContext } from '../../utils'
 import {
@@ -14,6 +14,7 @@ import {
 } from '../CircularActivityIndicator'
 import { SendButton } from '../SendButton'
 import styles from './styles'
+
 
 export interface InputTopLevelProps {
   /** Whether attachment is uploading. Will replace attachment button with a
@@ -79,7 +80,16 @@ export const Input = ({
   }
 
   return (
-    <View style={container}>
+    <View
+      style={[
+        container,
+        {
+          backgroundColor: theme.colors.inputBackground,
+          borderTopLeftRadius: theme.borders.inputBorderRadius,
+          borderTopRightRadius: theme.borders.inputBorderRadius,
+        },
+      ]}
+    >
       {user &&
         (isAttachmentUploading ? (
           <CircularActivityIndicator

@@ -13,6 +13,8 @@ import {
 import { CircularActivityIndicator } from '../CircularActivityIndicator'
 import { Input, InputAdditionalProps, InputTopLevelProps } from '../Input'
 import { Message, MessageTopLevelProps } from '../Message'
+import PDFView from '../PDFView/PDFView'
+import TypingAnimation from '../TypingAnimation/TypingAnimation'
 import ImageView from './ImageView'
 import ImageViewHeader from './ImageView.header'
 import styles from './styles'
@@ -37,7 +39,6 @@ import {
   Modal,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import PDFView from '../PDFView/PDFView'
 
 // Untestable
 /* istanbul ignore next */
@@ -85,6 +86,8 @@ export interface ChatProps extends ChatTopLevelProps {
    * When true, indicates that there are no more pages to load and
    * pagination will not be triggered. */
   isLastPage?: boolean
+  /** Indicates if someone is currently typing in the chat */
+  isTyping?: boolean
   /** Override the default localized copy. */
   l10nOverride?: Partial<Record<keyof (typeof l10n)[keyof typeof l10n], string>>
   locale?: keyof typeof l10n
@@ -128,6 +131,7 @@ export const Chat = ({
   inputProps,
   isAttachmentUploading,
   isLastPage,
+  isTyping,
   l10nOverride,
   locale = 'en',
   messages,
@@ -164,7 +168,8 @@ export const Chat = ({
     footer,
     footerLoadingPage,
     header,
-    keyboardAccessoryView,
+    typingAnimation
+    // keyboardAccessoryView,
   } = styles({ theme })
 
   const { onLayout, size } = useComponentSize()
@@ -176,7 +181,8 @@ export const Chat = ({
   const [imageViewIndex, setImageViewIndex] = React.useState(0)
   const [stackEntry, setStackEntry] = React.useState<StatusBarProps>({})
   const [showPDFViewer, setShowPDFViewer] = React.useState(false)
-  const [selectedPDFMessage, setSelectedPDFMessage] = React.useState<MessageType.File | null>(null)
+  const [selectedPDFMessage, setSelectedPDFMessage] =
+    React.useState<MessageType.File | null>(null)
 
   const l10nValue = React.useMemo(
     () => ({ ...l10n[locale], ...unwrap(l10nOverride) }),
@@ -267,22 +273,18 @@ export const Chat = ({
     [gallery]
   )
 
-  const handlePDFPress = React.useCallback(
-    (message: MessageType.File) => {
-      setSelectedPDFMessage(message);
-      setShowPDFViewer(true);
-    },
-    []
-  );
+  const handlePDFPress = React.useCallback((message: MessageType.File) => {
+    setSelectedPDFMessage(message)
+    setShowPDFViewer(true)
+  }, [])
 
   const handleMessagePress = React.useCallback(
     (message: MessageType.Any) => {
       if (message.type === 'image' && !disableImageGallery) {
         handleImagePress(message)
       } else if (message.type === 'file' && message.mimeType?.includes('pdf')) {
-
-        console.log("message is" , message.uri)
-        handlePDFPress(message as MessageType.File);
+        console.log('message is', message.uri)
+        handlePDFPress(message as MessageType.File)
       } else {
         onMessagePress?.(message)
       }
@@ -464,9 +466,19 @@ export const Chat = ({
               <KeyboardAccessoryView
                 {...{
                   renderScrollable,
-                  style: keyboardAccessoryView,
+                  // style: keyboardAccessoryView,
                 }}
               >
+                <View>
+                  {isTyping ? (
+                    <TypingAnimation
+                      style={typingAnimation}
+                      dotRadius={5}
+                      dotMargin={10}
+                      dotY={0}
+                    />
+                  ) : null}
+                </View>
                 <Input
                   {...{
                     ...unwrap(inputProps),
@@ -496,8 +508,8 @@ export const Chat = ({
             {showPDFViewer && selectedPDFMessage && (
               <Modal
                 visible={showPDFViewer}
-                animationType="slide"
-                presentationStyle="fullScreen"
+                animationType='slide'
+                presentationStyle='fullScreen'
               >
                 <PDFView
                   message={selectedPDFMessage}

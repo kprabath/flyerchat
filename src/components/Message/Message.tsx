@@ -132,6 +132,7 @@ export const Message = React.memo(
       theme,
     })
 
+
     if (message.type === 'dateHeader') {
       return (
         <View style={dateHeader}>

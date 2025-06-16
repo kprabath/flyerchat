@@ -8,6 +8,14 @@ export default ({ theme }: { theme: Theme }) =>
       backgroundColor: theme.colors.background,
       flex: 1,
     },
+    typingAnimation: {
+        backgroundColor: theme.colors.secondary,
+        height: 40,
+        width: 80,
+        borderRadius: 50,
+        marginBottom: 20,
+        marginLeft: 20,
+    },
     emptyComponentContainer: {
       alignItems: 'center',
       marginHorizontal: 24,

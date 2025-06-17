@@ -168,7 +168,8 @@ export const Chat = ({
     footer,
     footerLoadingPage,
     header,
-    typingAnimation
+    typingAnimation,
+    safeAreaFooter,
     // keyboardAccessoryView,
   } = styles({ theme })
 
@@ -520,6 +521,7 @@ export const Chat = ({
                 />
               </Modal>
             )}
+            <View style={safeAreaFooter} />
           </View>
         </L10nContext.Provider>
       </ThemeContext.Provider>

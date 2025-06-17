@@ -15,6 +15,16 @@ export default ({ theme }: { theme: Theme }) =>
         borderRadius: 50,
         marginBottom: 20,
         marginLeft: 20,
+        
+    },
+    safeAreaFooter:{
+      height: 40,
+      position: 'absolute',
+      right: 0,
+      left: 0,
+      bottom: 0,
+      zIndex: -1,
+      backgroundColor: theme.colors.inputBackground,
     },
     emptyComponentContainer: {
       alignItems: 'center',
@@ -46,7 +56,7 @@ export default ({ theme }: { theme: Theme }) =>
     },
     keyboardAccessoryView: {
       backgroundColor: theme.colors.inputBackground,
-      borderTopLeftRadius: theme.borders.inputBorderRadius,
-      borderTopRightRadius: theme.borders.inputBorderRadius,
+      // borderTopLeftRadius: theme.borders.inputBorderRadius,
+      // borderTopRightRadius: theme.borders.inputBorderRadius,
     },
   })

@@ -13,8 +13,7 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
     container: {
       maxWidth: messageWidth,
       minWidth: 100,
-      padding: 12,
-      backgroundColor: theme.colors.primary,
+      padding: 12
     },
     controls: {
       flexDirection: 'row',
@@ -29,4 +28,8 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
       height: 24,
       tintColor: theme.colors.secondary,
     },
+    captionText: {
+      marginBottom: 10,
+      color: '#fff'
+    }
   }) 

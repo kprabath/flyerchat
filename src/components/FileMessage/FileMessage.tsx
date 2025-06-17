@@ -18,28 +18,31 @@ export const FileMessage = ({ message }: FileMessageProps) => {
   const l10n = React.useContext(L10nContext)
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
-  const { container, icon, iconContainer, name, size, textContainer } = styles({
+  const { container, icon, iconContainer, name, size, textContainer, captionText } = styles({
     message,
     theme,
     user,
   })
 
   return (
-    <View
-      accessibilityLabel={l10n.fileButtonAccessibilityLabel}
-      style={container}
-    >
-      <View style={iconContainer}>
-        {theme.icons?.documentIcon?.() ?? (
-          <Image
-            source={require('../../assets/icon-document.png')}
-            style={icon}
-          />
-        )}
-      </View>
-      <View style={textContainer}>
-        <Text style={name}>{message.name}</Text>
-        <Text style={size}>{formatBytes(message.size)}</Text>
+    <View>
+      {message?.text ? <Text style={captionText}>{message.text}</Text> : null}
+      <View
+        accessibilityLabel={l10n.fileButtonAccessibilityLabel}
+        style={container}
+      >
+        <View style={iconContainer}>
+          {theme.icons?.documentIcon?.() ?? (
+            <Image
+              source={require('../../assets/icon-document.png')}
+              style={icon}
+            />
+          )}
+        </View>
+        <View style={textContainer}>
+          <Text style={name}>{message.name}</Text>
+          <Text style={size}>{formatBytes(message.size)}</Text>
+        </View>
       </View>
     </View>
   )

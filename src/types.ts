@@ -36,7 +36,8 @@ export namespace MessageType {
     roomId?: string
     status?: 'delivered' | 'error' | 'seen' | 'sending' | 'sent'
     type: 'custom' | 'file' | 'image' | 'video' | 'audio' | 'text' | 'unsupported' | 'deeplink'
-    updatedAt?: number
+    updatedAt?: number;
+    text?: string
   }
 
   export interface DerivedMessageProps extends Base {
@@ -53,7 +54,7 @@ export namespace MessageType {
 
   export interface Deeplink extends PartialDeeplink {
     type: 'deeplink'
-    text: string
+    text?: string
     url?: string
   }
 

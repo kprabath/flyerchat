@@ -49,6 +49,11 @@ const styles = ({
       flexShrink: 1,
       marginLeft: 16,
     },
+    captionText: {
+      marginBottom: 10,
+      color: '#fff',
+      padding: 12
+    }
   })
 
 export default styles

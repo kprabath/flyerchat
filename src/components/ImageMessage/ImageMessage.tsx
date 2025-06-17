@@ -34,6 +34,7 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
     sizeText,
     textContainer,
     verticalImage,
+    captionText
   } = styles({
     aspectRatio,
     message,
@@ -77,8 +78,11 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
       </View>
     </View>
   ) : (
-    <ImageBackground blurRadius={26} source={{ uri: message.uri }} style={{}}>
-      {renderImage()}
-    </ImageBackground>
+    <View>
+      {message?.text ? <Text style={captionText}>{message.text}</Text> : null}
+      <ImageBackground blurRadius={26} source={{ uri: message.uri }} style={{}}>
+        {renderImage()}
+      </ImageBackground>
+    </View>
   )
 }

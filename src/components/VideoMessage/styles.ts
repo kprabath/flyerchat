@@ -16,6 +16,7 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
       maxWidth: messageWidth,
       minWidth: 100,
       overflow: 'hidden',
+      padding: 12
     },
     subContainer: {
       width: Math.min(messageWidth, screenWidth * 0.8),
@@ -25,5 +26,9 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
       width: '100%',
       height: '100%',
     },
-    absoluteWrapper:{...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center'}
+    absoluteWrapper:{...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center'},
+    captionText: {
+      marginBottom: 10,
+      color: '#fff'
+    }
   }) 

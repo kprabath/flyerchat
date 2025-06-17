@@ -57,6 +57,11 @@ const styles = ({
       minWidth: 170,
       width: messageWidth * aspectRatio,
     },
+    captionText: {
+      marginBottom: 10,
+      color: '#fff',
+      padding: 12
+    }
   })
 
 export default styles

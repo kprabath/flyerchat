@@ -79,7 +79,8 @@ export namespace MessageType {
   }
 
   export interface DerivedText extends DerivedMessageProps, Text {
-    type: Text['type']
+    type: Text['type'];
+    text: string
   }
 
   export interface DerivedUnsupported extends DerivedMessageProps, Unsupported {
@@ -164,7 +165,8 @@ export namespace MessageType {
   }
 
   export interface Text extends Base, PartialText {
-    type: 'text'
+    type: 'text',
+    text: string
   }
 
   export interface Unsupported extends Base {

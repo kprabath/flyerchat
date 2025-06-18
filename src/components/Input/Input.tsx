@@ -31,6 +31,8 @@ export interface InputTopLevelProps {
    * `TextInput` state. Defaults to `editing`. */
   sendButtonVisibilityMode?: 'always' | 'editing'
   textInputProps?: TextInputProps
+  /** Custom React component to render after the SendButton */
+  inputRightViewComponent?: () => React.ReactNode
 }
 
 export interface InputAdditionalProps {
@@ -50,6 +52,7 @@ export const Input = ({
   onSendPress,
   sendButtonVisibilityMode,
   textInputProps,
+  inputRightViewComponent,
 }: InputProps) => {
   const l10n = React.useContext(L10nContext)
   const theme = React.useContext(ThemeContext)
@@ -118,10 +121,13 @@ export const Input = ({
         onChangeText={handleChangeText}
         value={value}
       />
-      {sendButtonVisibilityMode === 'always' ||
-      (sendButtonVisibilityMode === 'editing' && user && value.trim()) ? (
-        <SendButton onPress={handleSend} />
-      ) : null}
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {sendButtonVisibilityMode === 'always' ||
+        (sendButtonVisibilityMode === 'editing' && user && value.trim()) ? (
+          <SendButton onPress={handleSend} />
+        ) : null}
+        {inputRightViewComponent?.()}
+      </View>
     </View>
   )
 }

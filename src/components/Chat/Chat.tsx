@@ -117,6 +117,8 @@ export interface ChatProps extends ChatTopLevelProps {
       | MessageType.File
       | MessageType.Any
   ) => void
+  /** Custom React component to render after the SendButton */
+  inputRightViewComponent?: () => React.ReactNode
 }
 
 /** Entry component, represents the complete chat */
@@ -158,6 +160,7 @@ export const Chat = ({
   timeFormat,
   usePreviewData = true,
   user,
+  inputRightViewComponent,
 }: ChatProps) => {
   const {
     container,
@@ -489,6 +492,7 @@ export const Chat = ({
                     renderScrollable,
                     sendButtonVisibilityMode,
                     textInputProps,
+                    inputRightViewComponent,
                   }}
                 />
               </KeyboardAccessoryView>

@@ -13,6 +13,29 @@ export const L10nContext = React.createContext<typeof l10n[keyof typeof l10n]>(
 export const ThemeContext = React.createContext<Theme>(defaultTheme)
 export const UserContext = React.createContext<User | undefined>(undefined)
 
+export interface TwilioContextType {
+  getNextChatMessages?: () => Promise<any>
+  getConnectionState?: () => Promise<any>
+  initFlexClient?: (token: string) => Promise<any>
+  sendMessage?: (messageText: string, attachmentData: {}) => Promise<any>
+  getContentTemporaryUrlForMedia?: (mediaID: string, messageID: string) => Promise<any>
+  refreshToken?: (token: string) => void
+  getLastReadMessageIndex?: () => Promise<any>
+  getUnreadMessageCount?: () => Promise<any>
+  getContentTemporaryUrl?: (messageSID: string) => Promise<any>
+  shutDown?: () => void
+}
+
+export const TwilioContext = React.createContext<TwilioContextType | undefined>(undefined)
+
+export const useTwilio = (): TwilioContextType => {
+  const context = React.useContext(TwilioContext)
+  if (context === undefined) {
+    return {} // Return empty object if context is not provided
+  }
+  return context
+}
+
 /** Returns text representation of a provided bytes value (e.g. 1kB, 1GB) */
 export const formatBytes = (size: number, fractionDigits = 2) => {
   if (size <= 0) return '0 B'

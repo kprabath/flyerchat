@@ -7,6 +7,8 @@ import {
   initLocale,
   L10nContext,
   ThemeContext,
+  TwilioContext,
+  TwilioContextType,
   unwrap,
   UserContext,
 } from '../../utils'
@@ -58,6 +60,8 @@ export interface ChatProps extends ChatTopLevelProps {
   onSoundPress?: (message: MessageType.Audio) => void
   /** Called when user taps on a deeplink message */
   onDeeplinkPress?: (message: MessageType.Deeplink) => void
+  /** Twilio context value to provide Twilio functionality throughout the chat */
+  twilioContextValue?: TwilioContextType
   /** Allows you to replace the default Input widget e.g. if you want to create a channel view. */
   customBottomComponent?: () => React.ReactNode
   /** If {@link ChatProps.dateFormat} and/or {@link ChatProps.timeFormat} is not enough to
@@ -158,6 +162,7 @@ export const Chat = ({
   textInputProps,
   theme = defaultTheme,
   timeFormat,
+  twilioContextValue,
   usePreviewData = true,
   user,
   inputRightViewComponent,
@@ -460,7 +465,8 @@ export const Chat = ({
     <UserContext.Provider value={user}>
       <ThemeContext.Provider value={theme}>
         <L10nContext.Provider value={l10nValue}>
-          <View style={container} onLayout={onLayout}>
+          <TwilioContext.Provider value={twilioContextValue}>
+            <View style={container} onLayout={onLayout}>
             {customBottomComponent ? (
               <>
                 <>{renderScrollable({})}</>
@@ -526,7 +532,8 @@ export const Chat = ({
               </Modal>
             )}
             <View style={safeAreaFooter} />
-          </View>
+            </View>
+          </TwilioContext.Provider>
         </L10nContext.Provider>
       </ThemeContext.Provider>
     </UserContext.Provider>

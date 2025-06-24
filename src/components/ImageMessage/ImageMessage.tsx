@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Image, ImageBackground, Text, View } from 'react-native'
 
 import { MessageType, Size } from '../../types'
-import { formatBytes, ThemeContext, UserContext } from '../../utils'
+import { formatBytes, ThemeContext, UserContext, useTwilio } from '../../utils'
 import styles from './styles'
 
 export interface ImageMessageProps {
@@ -18,6 +18,7 @@ export interface ImageMessageProps {
 export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
+
   const defaultHeight = message.height ?? 0
   const defaultWidth = message.width ?? 0
   const [size, setSize] = React.useState<Size>({

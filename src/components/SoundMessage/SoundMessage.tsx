@@ -1,12 +1,10 @@
+import { MessageType } from '../../types'
+import { ThemeContext, useTwilio } from '../../utils'
+import { PlayButton } from '../PlayButton/PlayButton'
+import styles from './styles'
 import * as React from 'react'
 import { View, TouchableOpacity, Text, InteractionManager } from 'react-native'
 import SoundPlayer from 'react-native-sound-player'
-
-import { MessageType } from '../../types'
-import { ThemeContext } from '../../utils'
-import { PlayButton } from '../PlayButton/PlayButton'
-import styles from './styles'
-
 
 export interface SoundMessageProps {
   message: MessageType.DerivedAudio
@@ -26,28 +24,39 @@ export const SoundMessage = React.memo(
     const [duration, setDuration] = React.useState<number>(
       message.duration || 0
     )
+
+    const twilioContext = useTwilio()
     const {
       container,
       controls,
       duration: durationStyle,
-      captionText
+      captionText,
     } = styles({
       message,
       messageWidth,
       theme,
-
     })
-
     React.useEffect(() => {
       const getDuration = async () => {
         try {
-          // Load the sound file
-          await SoundPlayer.loadUrl(message.uri)
-          // Get the duration
-          const info = await SoundPlayer.getInfo()
-          setDuration(info.duration)
-          // Stop and reset the player
-          SoundPlayer.stop()
+          twilioContext
+            ?.downloadFile?.({
+              taskId: message.id,
+              mimeType: message.mimeType,
+              fileName: message.name,
+              uri: message.uri,
+            })
+            .then(async (url) => {
+              if (url) {
+                // Load the sound file
+                await SoundPlayer.loadUrl(message.uri)
+                // Get the duration
+                const info = await SoundPlayer.getInfo()
+                setDuration(info.duration)
+                // Stop and reset the player
+                SoundPlayer.stop()
+              }
+            })
         } catch (error) {
           console.error('Failed to get sound duration:', error)
         }
@@ -68,7 +77,9 @@ export const SoundMessage = React.memo(
 
     return (
       <View style={container}>
-        {message?.text ? <Text style={captionText}>{message?.text}</Text> : null}
+        {message?.text ? (
+          <Text style={captionText}>{message?.text}</Text>
+        ) : null}
         <TouchableOpacity
           onPress={() => onSoundPress?.(message)}
           style={controls}

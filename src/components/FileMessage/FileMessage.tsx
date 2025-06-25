@@ -15,6 +15,8 @@ export interface FileMessageProps {
 }
 
 export const FileMessage = ({ message }: FileMessageProps) => {
+
+
   const l10n = React.useContext(L10nContext)
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
@@ -23,6 +25,7 @@ export const FileMessage = ({ message }: FileMessageProps) => {
     theme,
     user,
   })
+
 
   return (
     <View>

@@ -13,6 +13,13 @@ export const L10nContext = React.createContext<typeof l10n[keyof typeof l10n]>(
 export const ThemeContext = React.createContext<Theme>(defaultTheme)
 export const UserContext = React.createContext<User | undefined>(undefined)
 
+interface DownloadTask   {
+  fileName: string;
+  mimeType: string;
+  taskId: string;
+  uri: string;
+}
+
 export interface TwilioContextType {
   getNextChatMessages?: () => Promise<any>
   getConnectionState?: () => Promise<any>
@@ -23,7 +30,8 @@ export interface TwilioContextType {
   getLastReadMessageIndex?: () => Promise<any>
   getUnreadMessageCount?: () => Promise<any>
   getContentTemporaryUrl?: (messageSID: string) => Promise<any>
-  shutDown?: () => void
+  shutDown?: () => void;
+  downloadFile?: (task: DownloadTask)=> Promise<string>
 }
 
 export const TwilioContext = React.createContext<TwilioContextType | undefined>(undefined)

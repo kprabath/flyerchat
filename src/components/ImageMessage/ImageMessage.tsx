@@ -1,9 +1,9 @@
-import * as React from 'react'
-import { Image, ImageBackground, Text, View } from 'react-native'
-
 import { MessageType, Size } from '../../types'
 import { formatBytes, ThemeContext, UserContext, useTwilio } from '../../utils'
 import styles from './styles'
+import * as React from 'react'
+import { Image, ImageBackground, Text, View } from 'react-native'
+import FastImage from 'react-native-fast-image'
 
 export interface ImageMessageProps {
   message: MessageType.DerivedImage
@@ -18,6 +18,9 @@ export interface ImageMessageProps {
 export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
+  const twilioContext = useTwilio()
+
+  const [url , setUrl] = React.useState<string>()
 
   const defaultHeight = message.height ?? 0
   const defaultWidth = message.width ?? 0
@@ -35,7 +38,7 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
     sizeText,
     textContainer,
     verticalImage,
-    captionText
+    captionText,
   } = styles({
     aspectRatio,
     message,
@@ -45,20 +48,30 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
   })
 
   React.useEffect(() => {
-    if (defaultHeight <= 0 || defaultWidth <= 0)
-      Image.getSize(
-        message.uri,
-        (width, height) => setSize({ height, width }),
-        () => setSize({ height: 0, width: 0 })
-      )
-  }, [defaultHeight, defaultWidth, message.uri])
+    twilioContext?.downloadFile?.({
+      taskId: message.id,
+      mimeType: message.mimeType,
+      fileName: message.name,
+      uri: message.uri,
+    }).then(url=> {
+      if(url) {
+        setUrl(url)
+        if (defaultHeight <= 0 || defaultWidth <= 0)
+          Image.getSize(
+            url,
+            (width, height) => setSize({ height, width }),
+            () => setSize({ height: 0, width: 0 })
+          )
+      }
+    })
+  }, [])
 
   const renderImage = () => {
     return (
-      <Image
+      <FastImage
         accessibilityRole='image'
         resizeMode={isMinimized ? 'cover' : 'contain'}
-        source={{ uri: message.uri }}
+        source={{ uri: url || message.uri }}
         style={
           isMinimized
             ? minimizedImage

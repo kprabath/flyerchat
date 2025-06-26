@@ -25,8 +25,8 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
   const defaultHeight = message.height ?? 0
   const defaultWidth = message.width ?? 0
   const [size, setSize] = React.useState<Size>({
-    height: defaultHeight,
-    width: defaultWidth,
+    height: 300,
+    width: 300,
   })
   const aspectRatio = size.width / (size.height || 1)
   const isMinimized = aspectRatio < 0.1 || aspectRatio > 10

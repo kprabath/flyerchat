@@ -7,6 +7,7 @@ import {
   View,
   TouchableOpacity,
   Text,
+  SafeAreaView,
 } from 'react-native'
 import Pdf from 'react-native-pdf'
 
@@ -21,23 +22,25 @@ const PDFView: React.FC<PDFViewProps> = ({ message, onClose }) => {
   const [uri, setUri] = useState<string>()
 
   useEffect(() => {
-    let uri = message.uri
-    if (message.uri.startsWith('content://')) {
-      twilio.copyToCache?.(message).then((res) => {
-        setUri(res)
-      })
-      return
-    }
-    setUri(uri)
+    twilio?.getContentTemporaryUrl?.(message.id).then((url) => {
+      let uri = message.uri
+      if (message.uri.startsWith('content://')) {
+        twilio.copyToCache?.(message).then((res) => {
+          setUri(res)
+        })
+        return
+      }
+      setUri(uri)
+    })
   }, [message.uri])
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <SafeAreaView style={styles.header}>
         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
           <Text style={styles.closeText}>✕</Text>
         </TouchableOpacity>
-      </View>
+      </SafeAreaView>
       <Pdf
         trustAllCerts={false}
         source={{

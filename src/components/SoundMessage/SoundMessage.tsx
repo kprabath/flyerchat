@@ -3,7 +3,7 @@ import { ThemeContext, useTwilio } from '../../utils'
 import { PlayButton } from '../PlayButton/PlayButton'
 import styles from './styles'
 import * as React from 'react'
-import { View, TouchableOpacity, Text, InteractionManager } from 'react-native'
+import { View, TouchableOpacity, Text, InteractionManager, Platform } from 'react-native'
 import SoundPlayer from 'react-native-sound-player'
 
 export interface SoundMessageProps {
@@ -55,7 +55,8 @@ export const SoundMessage = React.memo(
           }
           if (uri) {
             // Load the sound file
-            await SoundPlayer.loadUrl(uri)
+            const url  = Platform.OS === "ios" ? `file://${uri}`: uri
+            await SoundPlayer.loadUrl(url)
             // Get the duration
             const info = await SoundPlayer.getInfo()
             setDuration(info.duration)

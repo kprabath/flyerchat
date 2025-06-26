@@ -39,24 +39,29 @@ export const SoundMessage = React.memo(
     React.useEffect(() => {
       const getDuration = async () => {
         try {
-          twilioContext
-            ?.downloadFile?.({
+          let uri = message.uri
+          if (
+            message.uri.startsWith('file://') ||
+            message.uri.startsWith('content://')
+          ) {
+            console.log('local url found')
+          } else {
+            uri = await twilioContext?.downloadFile?.({
               taskId: message.id,
               mimeType: message.mimeType,
               fileName: message.name,
               uri: message.uri,
             })
-            .then(async (url) => {
-              if (url) {
-                // Load the sound file
-                await SoundPlayer.loadUrl(message.uri)
-                // Get the duration
-                const info = await SoundPlayer.getInfo()
-                setDuration(info.duration)
-                // Stop and reset the player
-                SoundPlayer.stop()
-              }
-            })
+          }
+          if (uri) {
+            // Load the sound file
+            await SoundPlayer.loadUrl(uri)
+            // Get the duration
+            const info = await SoundPlayer.getInfo()
+            setDuration(info.duration)
+            // Stop and reset the player
+            SoundPlayer.stop()
+          }
         } catch (error) {
           console.error('Failed to get sound duration:', error)
         }

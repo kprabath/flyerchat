@@ -31,7 +31,8 @@ export interface TwilioContextType {
   getUnreadMessageCount?: () => Promise<any>
   getContentTemporaryUrl?: (messageSID: string) => Promise<any>
   shutDown?: () => void;
-  downloadFile?: (task: DownloadTask)=> Promise<string>
+  downloadFile?: (task: DownloadTask)=> Promise<string>;
+  copyToCache?: (message: MessageType.File)=>Promise<string>
 }
 
 export const TwilioContext = React.createContext<TwilioContextType | undefined>(undefined)

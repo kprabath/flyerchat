@@ -1,16 +1,36 @@
-import React from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity, Text } from 'react-native';
-import Pdf from 'react-native-pdf';
-
-
-import { MessageType } from '../../types';
+import { MessageType } from '../../types'
+import { useTwilio } from '../../utils'
+import React, { useEffect, useState } from 'react'
+import {
+  StyleSheet,
+  Dimensions,
+  View,
+  TouchableOpacity,
+  Text,
+} from 'react-native'
+import Pdf from 'react-native-pdf'
 
 interface PDFViewProps {
-  message: MessageType.File;
-  onClose: () => void;
+  message: MessageType.File
+  onClose: () => void
 }
 
 const PDFView: React.FC<PDFViewProps> = ({ message, onClose }) => {
+  const twilio = useTwilio()
+
+  const [uri, setUri] = useState<string>()
+
+  useEffect(() => {
+    let uri = message.uri
+    if (message.uri.startsWith('content://')) {
+      twilio.copyToCache?.(message).then((res) => {
+        setUri(res)
+      })
+      return
+    }
+    setUri(uri)
+  }, [message.uri])
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -21,31 +41,31 @@ const PDFView: React.FC<PDFViewProps> = ({ message, onClose }) => {
       <Pdf
         trustAllCerts={false}
         source={{
-          uri: message.uri,
+          uri,
           cache: true,
           headers: {
             'Cache-Control': 'no-cache',
           },
         }}
         onLoadComplete={(numberOfPages: number, filePath: string) => {
-          console.log(`Number of pages: ${numberOfPages}`);
+          console.log(`Number of pages: ${numberOfPages}`)
         }}
         onPageChanged={(page: number, numberOfPages: number) => {
-          console.log(`Current page: ${page}`);
+          console.log(`Current page: ${page}`)
         }}
         onError={(error: any) => {
-          console.log('PDF Error:', error);
+          console.log('PDF Error:', error)
         }}
         onPressLink={(uri: string) => {
-          console.log(`Link pressed: ${uri}`);
+          console.log(`Link pressed: ${uri}`)
         }}
         style={styles.pdf}
         enablePaging={true}
         horizontal={false}
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -75,6 +95,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
-});
+})
 
-export default PDFView;
+export default PDFView

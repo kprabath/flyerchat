@@ -20,7 +20,7 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
   const user = React.useContext(UserContext)
   const twilioContext = useTwilio()
 
-  const [url , setUrl] = React.useState<string>()
+  const [url, setUrl] = React.useState<string>()
 
   const defaultHeight = message.height ?? 0
   const defaultWidth = message.width ?? 0
@@ -48,23 +48,37 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
   })
 
   React.useEffect(() => {
-    twilioContext?.downloadFile?.({
-      taskId: message.id,
-      mimeType: message.mimeType,
-      fileName: message.name,
-      uri: message.uri,
-    }).then(url=> {
-      if(url) {
-        setUrl(url)
+    ;(async () => {
+      // if file is a local path
+      let uri = message.uri
+      if (
+        message.uri.startsWith('file://') ||
+        message.uri.startsWith('content://')
+      ) {
+        console.log('this is a local url', uri)
+      } else {
+        uri = await twilioContext?.downloadFile?.({
+          taskId: message.id,
+          mimeType: message.mimeType,
+          fileName: message.name,
+          uri: message.uri,
+        })
+      }
+      if (uri) {
+        setUrl(uri)
         if (defaultHeight <= 0 || defaultWidth <= 0)
           Image.getSize(
-            url,
-            (width, height) => setSize({ height, width }),
-            () => setSize({ height: 0, width: 0 })
+            uri,
+            (width, height) => {
+              setSize({ height, width })
+            },
+            (error) => {
+              setSize({ height: 0, width: 0 })
+            }
           )
       }
-    })
-  }, [])
+    })()
+  }, [message.uri])
 
   const renderImage = () => {
     return (

@@ -50,7 +50,7 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
   React.useEffect(() => {
     ;(async () => {
       // if file is a local path
-      let uri = message.uri
+      let uri: any = message.uri
       if (
         message.uri.startsWith('file://') ||
         message.uri.startsWith('content://')
@@ -59,7 +59,7 @@ export const ImageMessage = ({ message, messageWidth }: ImageMessageProps) => {
       } else {
         uri = await twilioContext?.downloadFile?.({
           taskId: message.id,
-          mimeType: message.mimeType,
+          mimeType: (message as any).mimeType,
           fileName: message.name,
           uri: message.uri,
         })

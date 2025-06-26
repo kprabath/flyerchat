@@ -10,3 +10,4 @@ declare module 'react-native/Libraries/Blob/Blob' {
 
 declare module "react-native-pdf"
 declare module "react-native-sound-player"
+declare module "react-native-fast-image"

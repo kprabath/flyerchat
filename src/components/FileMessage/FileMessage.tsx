@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Image, Text, View } from 'react-native'
+import moment from 'moment'
 
 import { MessageType } from '../../types'
 import {
@@ -12,6 +13,11 @@ import styles from './styles'
 
 export interface FileMessageProps {
   message: MessageType.DerivedFile
+}
+
+const formatToJapanDate = (date: number)=> {
+   const formattedDate = moment(date).format("MM月DD日 HH:MM")
+   return  formattedDate
 }
 
 export const FileMessage = ({ message }: FileMessageProps) => {
@@ -37,14 +43,15 @@ export const FileMessage = ({ message }: FileMessageProps) => {
         <View style={iconContainer}>
           {theme.icons?.documentIcon?.() ?? (
             <Image
-              source={require('../../assets/icon-document.png')}
+              source={require('../../assets/file-text.png')}
               style={icon}
             />
           )}
         </View>
         <View style={textContainer}>
           <Text style={name}>{message.name}</Text>
-          <Text style={size}>{formatBytes(message.size)}</Text>
+          <Text style={size}>{"サイズ: " + formatBytes(message.size)}</Text>
+          {message?.createdAt ?  <Text style={size}>{"有効期限: " + formatToJapanDate(message.createdAt)}</Text> : null}
         </View>
       </View>
     </View>

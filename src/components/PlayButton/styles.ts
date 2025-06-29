@@ -12,7 +12,7 @@ export default ({ size, theme }: StyleProps) =>
     container: {
       height: size,
       width: size,
-      backgroundColor: theme.colors.secondary,
+      backgroundColor: "white",
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: size / 2,

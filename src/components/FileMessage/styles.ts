@@ -19,17 +19,15 @@ const styles = ({
       paddingRight: theme.insets.messageInsetsHorizontal,
     },
     icon: {
-      tintColor:
-        user?.id === message.author.id
-          ? theme.colors.sentMessageDocumentIcon
-          : theme.colors.receivedMessageDocumentIcon,
+      // tintColor: 'red',
     },
     iconContainer: {
       alignItems: 'center',
-      backgroundColor:
-        user?.id === message.author.id
-          ? `${String(theme.colors.sentMessageDocumentIcon)}33`
-          : `${String(theme.colors.receivedMessageDocumentIcon)}33`,
+      // backgroundColor:
+      //   user?.id === message.author.id
+      //     ? `${String(theme.colors.sentMessageDocumentIcon)}33`
+      //     : `${String(theme.colors.receivedMessageDocumentIcon)}33`,
+      backgroundColor: 'white',
       borderRadius: 21,
       height: 42,
       justifyContent: 'center',

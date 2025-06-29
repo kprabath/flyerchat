@@ -56,7 +56,7 @@ export const ImageMessage = React.memo(
     return (
       <View>
         {message?.text ? <Text style={captionText}>{message.text}</Text> : null}
-        <View style={{}}>{renderImage()}</View>
+        <View>{renderImage()}</View>
       </View>
     )
   },

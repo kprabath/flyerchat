@@ -33,6 +33,7 @@ export interface TwilioContextType {
   shutDown?: () => void;
   downloadFile?: (task: DownloadTask)=> Promise<string>;
   copyToCache?: (message: MessageType.File)=>Promise<string>
+  getMediaurl?: (message: MessageType.File | MessageType.Image | MessageType.Video)=>Promise<string>
 }
 
 export const TwilioContext = React.createContext<TwilioContextType | undefined>(undefined)

@@ -11,6 +11,7 @@ import {
   TwilioContextType,
   unwrap,
   UserContext,
+  useTwilio,
 } from '../../utils'
 import { CircularActivityIndicator } from '../CircularActivityIndicator'
 import { Input, InputAdditionalProps, InputTopLevelProps } from '../Input'
@@ -25,6 +26,7 @@ import {
   useComponentSize,
 } from '@flyerhq/react-native-keyboard-accessory-view'
 import { oneOf } from '@flyerhq/react-native-link-preview'
+import { FlashList } from '@shopify/flash-list'
 import dayjs from 'dayjs'
 import calendar from 'dayjs/plugin/calendar'
 import * as React from 'react'
@@ -41,7 +43,6 @@ import {
   Modal,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import {FlashList} from '@shopify/flash-list'
 
 // Untestable
 /* istanbul ignore next */
@@ -123,9 +124,9 @@ export interface ChatProps extends ChatTopLevelProps {
       | MessageType.Any
   ) => void
   /** Custom React component to render after the SendButton */
-  inputRightViewComponent?: () => React.ReactNode;
-  pdfRightIcon?: ({message}: {message: MessageType.File})=> React.ReactNode;
-  fullImageViewMiddleComponent?: React.ReactNode;
+  inputRightViewComponent?: () => React.ReactNode
+  pdfRightIcon?: ({ message }: { message: MessageType.File }) => React.ReactNode
+  fullImageViewMiddleComponent?: React.ReactNode
 }
 
 /** Entry component, represents the complete chat */
@@ -170,7 +171,7 @@ export const Chat = ({
   user,
   inputRightViewComponent,
   pdfRightIcon,
-  fullImageViewMiddleComponent
+  fullImageViewMiddleComponent,
 }: ChatProps) => {
   const {
     container,
@@ -260,7 +261,14 @@ export const Chat = ({
   )
 
   const handleImagePress = React.useCallback(
-    (message: MessageType.Image) => {
+    async (message: MessageType.Image) => {
+      if (twilioContextValue?.getMediaurl) {
+        await twilioContextValue?.getMediaurl?.(message).then((url) => {
+          message.uri = url
+        })
+
+      }
+
       setImageViewIndex(
         gallery.findIndex(
           (image) => image.id === message.id && image.uri === message.uri
@@ -274,10 +282,18 @@ export const Chat = ({
         })
       )
     },
-    [gallery]
+    [gallery , twilioContextValue]
   )
 
   const handlePDFPress = React.useCallback((message: MessageType.File) => {
+    if (twilioContextValue?.getMediaurl) {
+      twilioContextValue?.getMediaurl(message).then((url) => {
+        message.uri = url
+        setSelectedPDFMessage(message)
+        setShowPDFViewer(true)
+      })
+      return
+    }
     setSelectedPDFMessage(message)
     setShowPDFViewer(true)
   }, [])
@@ -419,7 +435,7 @@ export const Chat = ({
           ...{
             justifyContent: chatMessages.length !== 0 ? undefined : 'center',
             paddingTop: insets.bottom,
-          }
+          },
         }}
         initialNumToRender={10}
         ListEmptyComponent={renderListEmptyComponent}
@@ -464,73 +480,73 @@ export const Chat = ({
         <L10nContext.Provider value={l10nValue}>
           <TwilioContext.Provider value={twilioContextValue}>
             <View style={container} onLayout={onLayout}>
-            {customBottomComponent ? (
-              <>
-                <>{renderScrollable({})}</>
-                <>{customBottomComponent()}</>
-              </>
-            ) : (
-              <KeyboardAccessoryView
-                {...{
-                  renderScrollable,
-                  // style: keyboardAccessoryView,
-                }}
-              >
-                <View>
-                  {isTyping ? (
-                    <TypingAnimation
-                      style={typingAnimation}
-                      dotRadius={5}
-                      dotMargin={10}
-                      dotY={0}
-                    />
-                  ) : null}
-                </View>
-                <Input
+              {customBottomComponent ? (
+                <>
+                  <>{renderScrollable({})}</>
+                  <>{customBottomComponent()}</>
+                </>
+              ) : (
+                <KeyboardAccessoryView
                   {...{
-                    ...unwrap(inputProps),
-                    isAttachmentUploading,
-                    onAttachmentPress,
-                    onSendPress,
                     renderScrollable,
-                    sendButtonVisibilityMode,
-                    textInputProps,
-                    inputRightViewComponent,
+                    // style: keyboardAccessoryView,
                   }}
-                />
-              </KeyboardAccessoryView>
-            )}
-            <ImageView
-              imageIndex={imageViewIndex}
-              images={gallery}
-              onRequestClose={handleRequestClose}
-              visible={isImageViewVisible}
-              middleComponent={fullImageViewMiddleComponent}
-              HeaderComponent={() => (
-                <ImageViewHeader
-                  showDownloadButton={!gallery?.[imageViewIndex]?.isLocal}
-                  onDownloadPress={onDownloadPressLocal}
-                  onClosePress={handleRequestClose}
-                />
+                >
+                  <View>
+                    {isTyping ? (
+                      <TypingAnimation
+                        style={typingAnimation}
+                        dotRadius={5}
+                        dotMargin={10}
+                        dotY={0}
+                      />
+                    ) : null}
+                  </View>
+                  <Input
+                    {...{
+                      ...unwrap(inputProps),
+                      isAttachmentUploading,
+                      onAttachmentPress,
+                      onSendPress,
+                      renderScrollable,
+                      sendButtonVisibilityMode,
+                      textInputProps,
+                      inputRightViewComponent,
+                    }}
+                  />
+                </KeyboardAccessoryView>
               )}
-            />
-            {showPDFViewer && selectedPDFMessage && (
-              <Modal
-                visible={showPDFViewer}
-                animationType='slide'
-                presentationStyle='fullScreen'
-              >
-                <PDFView
-                  message={selectedPDFMessage}
-                  rightIcon={pdfRightIcon}
-                  onClose={() => {
-                    setShowPDFViewer(false)
-                    setSelectedPDFMessage(null)
-                  }}
-                />
-              </Modal>
-            )}
-            <View style={safeAreaFooter} />
+              <ImageView
+                imageIndex={imageViewIndex}
+                images={gallery}
+                onRequestClose={handleRequestClose}
+                visible={isImageViewVisible}
+                middleComponent={fullImageViewMiddleComponent}
+                HeaderComponent={() => (
+                  <ImageViewHeader
+                    showDownloadButton={!gallery?.[imageViewIndex]?.isLocal}
+                    onDownloadPress={onDownloadPressLocal}
+                    onClosePress={handleRequestClose}
+                  />
+                )}
+              />
+              {showPDFViewer && selectedPDFMessage && (
+                <Modal
+                  visible={showPDFViewer}
+                  animationType='slide'
+                  presentationStyle='fullScreen'
+                >
+                  <PDFView
+                    message={selectedPDFMessage}
+                    rightIcon={pdfRightIcon}
+                    onClose={() => {
+                      setShowPDFViewer(false)
+                      setSelectedPDFMessage(null)
+                    }}
+                  />
+                </Modal>
+              )}
+              <View style={safeAreaFooter} />
             </View>
           </TwilioContext.Provider>
         </L10nContext.Provider>

@@ -7,13 +7,14 @@ import {
   TouchableOpacity,
   Text,
   SafeAreaView,
+  Pressable,
 } from 'react-native'
 import Pdf from 'react-native-pdf'
 
 interface PDFViewProps {
   message: MessageType.File
   onClose: () => void
-  rightIcon?: ({message}: {message: MessageType.File})=> ReactNode
+  rightIcon?: ({ message }: { message: MessageType.File }) => ReactNode
 }
 
 const PDFView: React.FC<PDFViewProps> = ({ message, onClose, rightIcon }) => {
@@ -37,13 +38,15 @@ const PDFView: React.FC<PDFViewProps> = ({ message, onClose, rightIcon }) => {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.header}>
-        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-          <Text style={styles.closeText}>✕</Text>
-        </TouchableOpacity>
-        <View style={styles.pdfName}>
-          <Text style={styles.pdfText}>{message.name}</Text>
+        <View style = {styles.subHeader}>
+          <Pressable onPress={onClose} style={styles.closeButton}>
+            <Text style={styles.closeText}>✕</Text>
+          </Pressable>
+          <View pointerEvents='none' style={styles.pdfName}>
+            <Text style={styles.pdfText}>{message.name}</Text>
+          </View>
+          {rightIcon?.({ message })}
         </View>
-        {rightIcon?.({message})}
       </SafeAreaView>
       <Pdf
         trustAllCerts={false}
@@ -90,10 +93,13 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 1,
     padding: 16,
+    backgroundColor: '#EEEEEE',
+  },
+  subHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#EEEEEE',
+    zIndex: 10
   },
   closeButton: {
     padding: 8,

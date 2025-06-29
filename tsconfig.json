@@ -24,6 +24,7 @@
     "module": "ESNext",
     "noEmitOnError": true,
     "sourceMap": true,
+    "checkJS": false
   },
   "include": ["src/**/*", "jest/**/*"],
   "exclude": [

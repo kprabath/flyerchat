@@ -74,10 +74,10 @@ export const getImageStyles = (
     return { width: 0, height: 0 };
   }
 
-  const transform = translate.getTranslateTransform();
+  const transform: {[key: string]: any} = translate.getTranslateTransform();
 
   if (scale) {
-    transform.push({ scale }, { perspective: new Animated.Value(1000) });
+    transform.push({ scale }, { perspective: new Animated.Value(1000) as any });
   }
 
   return {

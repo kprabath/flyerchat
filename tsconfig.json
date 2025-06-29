@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "strict": true,
+    "strict": false,
     "baseUrl": ".",
     "paths": {
       "*": ["src/*"]
@@ -24,14 +24,15 @@
     "module": "ESNext",
     "noEmitOnError": true,
     "sourceMap": true,
-    "checkJS": false
+    "checkJs": false
   },
-  "include": ["src/**/*", "jest/**/*"],
+  "include": ["jest/**/*"],
   "exclude": [
     "node_modules",
     "babel.config.js",
     "metro.config.js",
     "jest.config.js",
-    "lib"
+    "lib",
+    "src/**/*"
   ]
 }

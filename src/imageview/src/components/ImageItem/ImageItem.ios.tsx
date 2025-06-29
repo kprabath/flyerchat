@@ -138,7 +138,7 @@ const ImageItem = ({
         >
           <Animated.Image
             source={imageSrc}
-            style={imageStylesWithOpacity}
+            style={imageStylesWithOpacity as any}
             onLoad={() => setLoaded(true)}
           />
         </TouchableWithoutFeedback>

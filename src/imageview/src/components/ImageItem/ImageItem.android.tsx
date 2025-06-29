@@ -134,7 +134,7 @@ const ImageItem = ({
       <Animated.Image
         {...panHandlers}
         source={imageSrc}
-        style={imageStylesWithOpacity}
+        style={imageStylesWithOpacity as any}
         onLoad={onLoaded}
       />
       {(!isLoaded || !imageDimensions) && <ImageLoading />}

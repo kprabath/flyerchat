@@ -189,7 +189,7 @@ export const Chat = ({
 
   const { onLayout, size } = useComponentSize()
   const animationRef = React.useRef(false)
-  const list = React.useRef<FlashList<MessageType.DerivedAny>>(null)
+  const list = React.useRef<any>(null)
   const insets = useSafeAreaInsets()
   const [isImageViewVisible, setIsImageViewVisible] = React.useState(false)
   const [isNextPageLoading, setNextPageLoading] = React.useState(false)

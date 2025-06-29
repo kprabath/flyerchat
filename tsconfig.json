@@ -24,15 +24,13 @@
     "module": "ESNext",
     "noEmitOnError": true,
     "sourceMap": true,
-    "checkJs": false
   },
-  "include": ["jest/**/*"],
+  "include": ["jest/**/*" ,"src/**/*"],
   "exclude": [
     "node_modules",
     "babel.config.js",
     "metro.config.js",
     "jest.config.js",
     "lib",
-    "src/**/*"
   ]
 }

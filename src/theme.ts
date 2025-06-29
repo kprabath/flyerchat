@@ -37,10 +37,10 @@ const NEUTRAL_7 = '#ffffff'
 const NEUTRAL_7_WITH_OPACITY = '#ffffff80'
 
 /** Primary */
-const PRIMARY = '#6f61e8'
+const PRIMARY = '#5A00FF'
 
 /** Secondary */
-const SECONDARY = '#f5f5f7'
+const SECONDARY = '#D2AF8C'
 
 /** Secondary dark */
 const SECONDARY_DARK = '#2b2250'

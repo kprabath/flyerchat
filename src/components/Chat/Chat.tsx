@@ -41,6 +41,7 @@ import {
   Modal,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import {FlashList} from '@shopify/flash-list'
 
 // Untestable
 /* istanbul ignore next */
@@ -122,7 +123,9 @@ export interface ChatProps extends ChatTopLevelProps {
       | MessageType.Any
   ) => void
   /** Custom React component to render after the SendButton */
-  inputRightViewComponent?: () => React.ReactNode
+  inputRightViewComponent?: () => React.ReactNode;
+  pdfRightIcon?: ({message}: {message: MessageType.File})=> React.ReactNode;
+  fullImageViewMiddleComponent?: React.ReactNode;
 }
 
 /** Entry component, represents the complete chat */
@@ -166,6 +169,8 @@ export const Chat = ({
   usePreviewData = true,
   user,
   inputRightViewComponent,
+  pdfRightIcon,
+  fullImageViewMiddleComponent
 }: ChatProps) => {
   const {
     container,
@@ -183,7 +188,7 @@ export const Chat = ({
 
   const { onLayout, size } = useComponentSize()
   const animationRef = React.useRef(false)
-  const list = React.useRef<FlatList<MessageType.DerivedAny>>(null)
+  const list = React.useRef<FlashList<MessageType.DerivedAny>>(null)
   const insets = useSafeAreaInsets()
   const [isImageViewVisible, setIsImageViewVisible] = React.useState(false)
   const [isNextPageLoading, setNextPageLoading] = React.useState(false)
@@ -246,17 +251,7 @@ export const Chat = ({
     // `onEndReached`, impossible to test.
     // TODO: Verify again later
     /* istanbul ignore next */
-    async ({ distanceFromEnd }: { distanceFromEnd: number }) => {
-      if (
-        !onEndReached ||
-        isLastPage ||
-        distanceFromEnd <= 0 ||
-        messages.length === 0 ||
-        isNextPageLoading
-      ) {
-        return
-      }
-
+    async () => {
       setNextPageLoading(true)
       await onEndReached?.()
       setNextPageLoading(false)
@@ -416,22 +411,23 @@ export const Chat = ({
 
   const renderScrollable = React.useCallback(
     (panHandlers: GestureResponderHandlers) => (
-      <FlatList
+      <FlashList
         automaticallyAdjustContentInsets={false}
-        contentContainerStyle={[
-          flatListContentContainer,
+        contentContainerStyle={{
+          ...flatListContentContainer,
           // eslint-disable-next-line react-native/no-inline-styles
-          {
+          ...{
             justifyContent: chatMessages.length !== 0 ? undefined : 'center',
             paddingTop: insets.bottom,
-          },
-        ]}
+          }
+        }}
         initialNumToRender={10}
         ListEmptyComponent={renderListEmptyComponent}
         ListFooterComponent={renderListFooterComponent}
         ListHeaderComponent={<View />}
         ListHeaderComponentStyle={header}
         maxToRenderPerBatch={6}
+        windowSize={8}
         onEndReachedThreshold={0.75}
         style={flatList}
         showsVerticalScrollIndicator={false}
@@ -441,6 +437,7 @@ export const Chat = ({
         keyboardDismissMode='interactive'
         keyExtractor={keyExtractor}
         onEndReached={handleEndReached}
+        estimatedItemSize={100}
         ref={list}
         renderItem={renderItem}
         {...panHandlers}
@@ -508,6 +505,7 @@ export const Chat = ({
               images={gallery}
               onRequestClose={handleRequestClose}
               visible={isImageViewVisible}
+              middleComponent={fullImageViewMiddleComponent}
               HeaderComponent={() => (
                 <ImageViewHeader
                   showDownloadButton={!gallery?.[imageViewIndex]?.isLocal}
@@ -524,6 +522,7 @@ export const Chat = ({
               >
                 <PDFView
                   message={selectedPDFMessage}
+                  rightIcon={pdfRightIcon}
                   onClose={() => {
                     setShowPDFViewer(false)
                     setSelectedPDFMessage(null)

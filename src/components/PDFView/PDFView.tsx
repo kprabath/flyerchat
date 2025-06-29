@@ -1,9 +1,8 @@
 import { MessageType } from '../../types'
 import { useTwilio } from '../../utils'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import {
   StyleSheet,
-  Dimensions,
   View,
   TouchableOpacity,
   Text,
@@ -14,9 +13,10 @@ import Pdf from 'react-native-pdf'
 interface PDFViewProps {
   message: MessageType.File
   onClose: () => void
+  rightIcon?: ({message}: {message: MessageType.File})=> ReactNode
 }
 
-const PDFView: React.FC<PDFViewProps> = ({ message, onClose }) => {
+const PDFView: React.FC<PDFViewProps> = ({ message, onClose, rightIcon }) => {
   const twilio = useTwilio()
 
   const [uri, setUri] = useState<string>()
@@ -40,6 +40,10 @@ const PDFView: React.FC<PDFViewProps> = ({ message, onClose }) => {
         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
           <Text style={styles.closeText}>✕</Text>
         </TouchableOpacity>
+        <View style={styles.pdfName}>
+          <Text style={styles.pdfText}>{message.name}</Text>
+        </View>
+        {rightIcon?.({message})}
       </SafeAreaView>
       <Pdf
         trustAllCerts={false}
@@ -73,7 +77,11 @@ const PDFView: React.FC<PDFViewProps> = ({ message, onClose }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#EEEEEE',
+  },
+  pdfText: {
+    color: '#0A1446',
+    fontSize: 18,
   },
   header: {
     position: 'absolute',
@@ -83,20 +91,27 @@ const styles = StyleSheet.create({
     zIndex: 1,
     padding: 16,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#EEEEEE',
   },
   closeButton: {
     padding: 8,
   },
   closeText: {
-    color: '#fff',
-    fontSize: 24,
+    color: '#0A1446',
+    fontSize: 18,
     fontWeight: 'bold',
   },
   pdf: {
     flex: 1,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    backgroundColor: '#EEEEEE',
+  },
+  pdfName: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
   },
 })
 

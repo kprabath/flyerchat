@@ -18,22 +18,7 @@ interface PDFViewProps {
 }
 
 const PDFView: React.FC<PDFViewProps> = ({ message, onClose, rightIcon }) => {
-  const twilio = useTwilio()
 
-  const [uri, setUri] = useState<string>()
-
-  useEffect(() => {
-    twilio?.getContentTemporaryUrl?.(message.id).then((url) => {
-      let uri = message.uri
-      if (message.uri.startsWith('content://')) {
-        twilio.copyToCache?.(message).then((res) => {
-          setUri(res)
-        })
-        return
-      }
-      setUri(uri)
-    })
-  }, [message.uri])
 
   return (
     <View style={styles.container}>
@@ -51,7 +36,7 @@ const PDFView: React.FC<PDFViewProps> = ({ message, onClose, rightIcon }) => {
       <Pdf
         trustAllCerts={false}
         source={{
-          uri,
+          uri: message.uri,
           cache: true,
           headers: {
             'Cache-Control': 'no-cache',

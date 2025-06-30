@@ -303,7 +303,6 @@ export const Chat = ({
       if (message.type === 'image' && !disableImageGallery) {
         handleImagePress(message)
       } else if (message.type === 'file' && message.mimeType?.includes('pdf')) {
-        console.log('message is', message.uri)
         handlePDFPress(message as MessageType.File)
       } else {
         onMessagePress?.(message)

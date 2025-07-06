@@ -1,7 +1,7 @@
 import { usePrevious } from '../../hooks'
 import { l10n } from '../../l10n'
 import { defaultTheme } from '../../theme'
-import { MessageType, Theme, User } from '../../types'
+import { MessageType, PreviewImage, Theme, User } from '../../types'
 import {
   calculateChatMessages,
   initLocale,
@@ -56,6 +56,8 @@ dayjs.extend(calendar)
 export type ChatTopLevelProps = InputTopLevelProps & MessageTopLevelProps
 
 export interface ChatProps extends ChatTopLevelProps {
+    /** Called when user taps on a image message */
+  onImagePress?:(message: MessageType.Image)=>void;
   /** Called when user taps on a video message */
   onVideoPress?: (message: MessageType.Video) => void
   /** Called when user taps on a sound message */
@@ -194,6 +196,7 @@ export const Chat = ({
   const [isImageViewVisible, setIsImageViewVisible] = React.useState(false)
   const [isNextPageLoading, setNextPageLoading] = React.useState(false)
   const [imageViewIndex, setImageViewIndex] = React.useState(0)
+  const [imageSource, setImageSource] = React.useState<PreviewImage>()
   const [stackEntry, setStackEntry] = React.useState<StatusBarProps>({})
   const [showPDFViewer, setShowPDFViewer] = React.useState(false)
   const [selectedPDFMessage, setSelectedPDFMessage] =
@@ -264,16 +267,25 @@ export const Chat = ({
     async (message: MessageType.Image) => {
       if (twilioContextValue?.getMediaurl) {
         await twilioContextValue?.getMediaurl?.(message).then((url) => {
+          console.log("fetched new message url", url , message.uri)
           message.uri = url
         })
-
       }
 
-      setImageViewIndex(
-        gallery.findIndex(
-          (image) => image.id === message.id && image.uri === message.uri
-        )
-      )
+      // TO:DO
+      // disabled gallery for now
+      // setImageViewIndex(
+      //   gallery.findIndex(
+      //     (image) => image.id === message.id && image.uri === message.uri
+      //   )
+      // )
+      setImageSource({
+        id: message.id,
+        uri: message.uri,
+        isLocal: message?.metadata?.isLocal,
+        fileName: message?.name,
+      })
+      setImageViewIndex(0)
       setIsImageViewVisible(true)
       setStackEntry(
         StatusBar.pushStackEntry({
@@ -282,7 +294,7 @@ export const Chat = ({
         })
       )
     },
-    [gallery , twilioContextValue]
+    [gallery, twilioContextValue]
   )
 
   const handlePDFPress = React.useCallback((message: MessageType.File) => {
@@ -326,12 +338,12 @@ export const Chat = ({
 
   const onDownloadPressLocal = React.useCallback(() => {
     const selectedMessage = messages.find(
-      (e) => e.id === gallery?.[imageViewIndex]?.id
+      (e) => e.id === imageSource?.id
     )
     if (selectedMessage) {
       onDownloadPress?.(selectedMessage as MessageType.Any)
     }
-  }, [onDownloadPress])
+  }, [onDownloadPress,imageSource])
 
   const renderItem = React.useCallback(
     ({ item: message }: { item: MessageType.DerivedAny; index: number }) => {
@@ -517,7 +529,8 @@ export const Chat = ({
               )}
               <ImageView
                 imageIndex={imageViewIndex}
-                images={gallery}
+                // images={gallery}
+                images={[imageSource]}
                 onRequestClose={handleRequestClose}
                 visible={isImageViewVisible}
                 middleComponent={fullImageViewMiddleComponent}

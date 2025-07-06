@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
   pdfText: {
     color: '#0A1446',
     fontSize: 18,
+    maxWidth: '80%'
   },
   header: {
     position: 'absolute',
@@ -84,7 +85,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    zIndex: 10
+    zIndex: 10,
+    paddingHorizontal: 16
   },
   closeButton: {
     padding: 8,

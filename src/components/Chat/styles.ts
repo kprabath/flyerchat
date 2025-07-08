@@ -24,7 +24,7 @@ export default ({ theme }: { theme: Theme }) =>
       left: 0,
       bottom: 0,
       zIndex: -1,
-      backgroundColor: theme.colors.inputBackground,
+      backgroundColor: theme.colors.footerBackground,
     },
     emptyComponentContainer: {
       alignItems: 'center',

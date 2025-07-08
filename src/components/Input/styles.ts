@@ -4,11 +4,17 @@ import { Theme } from '../../types'
 
 export default ({ theme }: { theme: Theme }) =>
   StyleSheet.create({
-    container: {
+    subcontainer: {
       alignItems: 'center',
       flexDirection: 'row',
+      justifyContent: "space-between",
+      paddingTop: 8
+    },
+    container: {
       paddingHorizontal: 24,
       paddingVertical: 20,
+      marginBottom: 20,
+      marginHorizontal: 16,
     },
     input: {
       ...theme.fonts.inputTextStyle,

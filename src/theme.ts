@@ -18,6 +18,10 @@ export const COLORS: ColorValue[] = [
   '#c78ae5',
 ]
 
+const CHAT_BACKGROUND = "#FFFFFF"
+const INPUT_BACKGROUND = "#F0F0F0"
+const INPUT_TEXT = "grey"
+
 /** Dark */
 const DARK = '#1f1c38'
 
@@ -54,8 +58,9 @@ export const defaultTheme: Theme = {
   colors: {
     background: NEUTRAL_7,
     error: ERROR,
-    inputBackground: NEUTRAL_0,
-    inputText: NEUTRAL_7,
+    inputBackground: INPUT_BACKGROUND,
+    footerBackground: CHAT_BACKGROUND,
+    inputText: INPUT_TEXT,
     primary: PRIMARY,
     receivedMessageDocumentIcon: PRIMARY,
     secondary: SECONDARY,

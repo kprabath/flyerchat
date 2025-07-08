@@ -218,6 +218,7 @@ export interface ThemeColors {
   sentMessageDocumentIcon: ColorValue
   userAvatarImageBackground: ColorValue
   userAvatarNameColors: ColorValue[]
+  footerBackground: ColorValue
 }
 
 export interface ThemeFonts {

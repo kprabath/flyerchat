@@ -1,6 +1,3 @@
-
-import * as React from 'react'
-import { TextInput, TextInputProps, View } from 'react-native'
 import { MessageType } from '../../types'
 import { L10nContext, ThemeContext, unwrap, UserContext } from '../../utils'
 import {
@@ -14,7 +11,8 @@ import {
 } from '../CircularActivityIndicator'
 import { SendButton } from '../SendButton'
 import styles from './styles'
-
+import * as React from 'react'
+import { Keyboard, TextInput, TextInputProps, View } from 'react-native'
 
 export interface InputTopLevelProps {
   /** Whether attachment is uploading. Will replace attachment button with a
@@ -57,12 +55,33 @@ export const Input = ({
   const l10n = React.useContext(L10nContext)
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
-  const { container, input, marginRight } = styles({ theme })
+  const { container, input, marginRight, subcontainer } = styles({ theme })
 
   // Use `defaultValue` if provided
   const [text, setText] = React.useState(textInputProps?.defaultValue ?? '')
+  const [keyboardVisible, setKeyboardVisible] = React.useState(false)
 
   const value = textInputProps?.value ?? text
+
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true)
+      }
+    )
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false)
+      }
+    )
+
+    return () => {
+      keyboardDidShowListener.remove()
+      keyboardDidHideListener.remove()
+    }
+  }, [])
 
   const handleChangeText = (newText: string) => {
     // Track local state in case `onChangeText` is provided and `value` is not
@@ -88,46 +107,53 @@ export const Input = ({
         container,
         {
           backgroundColor: theme.colors.inputBackground,
-          borderTopLeftRadius: theme.borders.inputBorderRadius,
-          borderTopRightRadius: theme.borders.inputBorderRadius,
+          borderRadius: theme.borders.inputBorderRadius,
         },
       ]}
     >
-      {user &&
-        (isAttachmentUploading ? (
-          <CircularActivityIndicator
-            {...{
-              ...attachmentCircularActivityIndicatorProps,
-              color: theme.colors.inputText,
-              style: marginRight,
-            }}
-          />
-        ) : (
-          !!onAttachmentPress && (
-            <AttachmentButton
-              {...unwrap(attachmentButtonProps)}
-              onPress={onAttachmentPress}
-            />
-          )
-        ))}
-      <TextInput
-        multiline
-        placeholder={l10n.inputPlaceholder}
-        placeholderTextColor={`${String(theme.colors.inputText)}80`}
-        underlineColorAndroid='transparent'
-        {...textInputProps}
-        // Keep our implementation but allow user to use these `TextInputProps`
-        style={[input, textInputProps?.style]}
-        onChangeText={handleChangeText}
-        value={value}
-      />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style = {{flexDirection: "row"}}>
+        <TextInput
+          multiline
+          placeholder={l10n.inputPlaceholder}
+          placeholderTextColor={`${String(theme.colors.inputText)}80`}
+          underlineColorAndroid='transparent'
+          {...textInputProps}
+          // Keep our implementation but allow user to use these `TextInputProps`
+          style={[input, textInputProps?.style]}
+          onChangeText={handleChangeText}
+          value={value}
+        />
+
         {sendButtonVisibilityMode === 'always' ||
         (sendButtonVisibilityMode === 'editing' && user && value.trim()) ? (
           <SendButton onPress={handleSend} />
         ) : null}
-        {inputRightViewComponent?.()}
       </View>
+
+      {!keyboardVisible && (
+        <View style={subcontainer}>
+          {user &&
+            (isAttachmentUploading ? (
+              <CircularActivityIndicator
+                {...{
+                  ...attachmentCircularActivityIndicatorProps,
+                  color: theme.colors.inputText,
+                  style: marginRight,
+                }}
+              />
+            ) : (
+              !!onAttachmentPress && (
+                <AttachmentButton
+                  {...unwrap(attachmentButtonProps)}
+                  onPress={onAttachmentPress}
+                />
+              )
+            ))}
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {inputRightViewComponent?.()}
+          </View>
+        </View>
+      )}
     </View>
   )
 }

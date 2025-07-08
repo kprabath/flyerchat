@@ -39,7 +39,7 @@ export const AttachmentButton = ({
     >
       {theme.icons?.attachmentButtonIcon?.() ?? (
         <Image
-          source={require('../../assets/icon-attachment.png')}
+          source={require('../../assets/paper_clip.png')}
           style={[styles.image, { tintColor: theme.colors.inputText }]}
         />
       )}
@@ -50,5 +50,7 @@ export const AttachmentButton = ({
 const styles = StyleSheet.create({
   image: {
     marginRight: 16,
+    height: 25,
+    width: 25
   },
 })

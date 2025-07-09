@@ -280,7 +280,7 @@ export const Chat = ({
       setImageSource({
         id: message.id,
         uri: message.uri,
-        isLocal: message?.metadata?.isLocal,
+        isLocal: message?.metadata?.isLocal ||  message?.metadata?.local,
         fileName: message?.name,
       })
       setImageViewIndex(0)

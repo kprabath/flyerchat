@@ -534,7 +534,7 @@ export const Chat = ({
                 middleComponent={fullImageViewMiddleComponent}
                 HeaderComponent={() => (
                   <ImageViewHeader
-                    showDownloadButton={!gallery?.[imageViewIndex]?.isLocal}
+                    showDownloadButton={!imageSource?.isLocal}
                     onDownloadPress={onDownloadPressLocal}
                     onClosePress={handleRequestClose}
                   />

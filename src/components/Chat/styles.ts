@@ -29,7 +29,7 @@ export default ({ theme }: { theme: Theme }) =>
     emptyComponentContainer: {
       alignItems: 'center',
       marginHorizontal: 24,
-      transform: [{ rotateX: '180deg' }],
+      transform: [{ scale: -1}],
     },
     emptyComponentTitle: {
       ...theme.fonts.emptyChatPlaceholderTextStyle,

@@ -11,7 +11,6 @@ import {
   TwilioContextType,
   unwrap,
   UserContext,
-  useTwilio,
 } from '../../utils'
 import { CircularActivityIndicator } from '../CircularActivityIndicator'
 import { Input, InputAdditionalProps, InputTopLevelProps } from '../Input'
@@ -31,7 +30,6 @@ import dayjs from 'dayjs'
 import calendar from 'dayjs/plugin/calendar'
 import * as React from 'react'
 import {
-  FlatList,
   FlatListProps,
   GestureResponderHandlers,
   InteractionManager,

@@ -1,6 +1,5 @@
-import { StyleSheet } from 'react-native'
-
 import { MessageType, Theme, User } from '../../types'
+import { StyleSheet } from 'react-native'
 
 const styles = ({
   message,
@@ -49,9 +48,10 @@ const styles = ({
     },
     captionText: {
       marginBottom: 10,
-      color:  user?.id === message.author.id ? '#fff'  :  undefined,
-      padding: 12
-    }
+      color: user?.id === message.author.id ? '#fff' : undefined,
+      padding: 12,
+      fontFamily: 'Manrope-Regular',
+    },
   })
 
 export default styles

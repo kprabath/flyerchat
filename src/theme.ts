@@ -1,6 +1,5 @@
-import { ColorValue } from 'react-native'
-
 import { Theme } from './types'
+import { ColorValue } from 'react-native'
 
 // For internal usage only. Use values from theme itself.
 
@@ -18,9 +17,9 @@ export const COLORS: ColorValue[] = [
   '#c78ae5',
 ]
 
-const CHAT_BACKGROUND = "#FFFFFF"
-const INPUT_BACKGROUND = "#F0F0F0"
-const INPUT_TEXT = "grey"
+const CHAT_BACKGROUND = '#FFFFFF'
+const INPUT_BACKGROUND = '#F0F0F0'
+const INPUT_TEXT = 'grey'
 
 /** Dark */
 const DARK = '#1f1c38'
@@ -91,6 +90,7 @@ export const defaultTheme: Theme = {
       fontSize: 16,
       fontWeight: '500',
       lineHeight: 24,
+      fontFamily: 'Manrope-Regular',
     },
     receivedMessageCaptionTextStyle: {
       color: NEUTRAL_2,
@@ -115,6 +115,7 @@ export const defaultTheme: Theme = {
       fontSize: 16,
       fontWeight: '500',
       lineHeight: 24,
+      fontFamily: 'Manrope-Regular',
     },
     sentMessageCaptionTextStyle: {
       color: NEUTRAL_7_WITH_OPACITY,

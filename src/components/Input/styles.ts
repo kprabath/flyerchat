@@ -24,6 +24,7 @@ export default ({ theme }: { theme: Theme }) =>
       // Fixes default paddings for Android
       paddingBottom: 0,
       paddingTop: 0,
+      fontFamily: "Manrope-Regular"
     },
     marginRight: {
       marginRight: 16,

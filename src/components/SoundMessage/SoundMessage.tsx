@@ -1,5 +1,5 @@
 import { MessageType } from '../../types'
-import { ThemeContext, useTwilio } from '../../utils'
+import { ThemeContext, UserContext, useTwilio } from '../../utils'
 import { PlayButton } from '../PlayButton/PlayButton'
 import styles from './styles'
 import * as React from 'react'
@@ -21,6 +21,7 @@ export const SoundMessage = React.memo(
   }: SoundMessageProps) => {
     const theme = React.useContext(ThemeContext)
     const duration = message?.metadata?.duration || 0
+    const user = React.useContext(UserContext)
 
     const {
       container,
@@ -31,6 +32,7 @@ export const SoundMessage = React.memo(
       message,
       messageWidth,
       theme,
+      user
     })
 
     const formatDuration = (seconds: number) => {
@@ -50,7 +52,7 @@ export const SoundMessage = React.memo(
         >
           <PlayButton size={32} />
           <View style={durationStyle}>
-            <Text style={{ color: theme.colors.inputText }}>
+            <Text style={{ color: message.author.id === user.id ? theme.colors.inputText : undefined }}>
               {formatDuration(duration)}
             </Text>
           </View>

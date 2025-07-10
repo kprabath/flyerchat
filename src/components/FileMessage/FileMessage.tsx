@@ -33,6 +33,7 @@ export const FileMessage = ({ message }: FileMessageProps) => {
   })
 
 
+
   return (
     <View>
       {message?.text ? <Text style={captionText}>{message.text}</Text> : null}

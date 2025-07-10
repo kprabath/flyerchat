@@ -1,14 +1,15 @@
 import { StyleSheet } from 'react-native'
 
-import { MessageType, Theme } from '../../types'
+import { MessageType, Theme, User } from '../../types'
 
 interface StyleProps {
   message: MessageType.DerivedAudio
   messageWidth: number
   theme: Theme
+  user?: User
 }
 
-export default ({ message, messageWidth, theme }: StyleProps) =>
+export default ({ message, messageWidth, theme , user }: StyleProps) =>
   StyleSheet.create({
     container: {
       maxWidth: messageWidth,
@@ -30,6 +31,6 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
     },
     captionText: {
       marginBottom: 10,
-      color: '#fff'
+      color:  user?.id === message.author.id ? '#fff'  :  undefined,
     }
   }) 

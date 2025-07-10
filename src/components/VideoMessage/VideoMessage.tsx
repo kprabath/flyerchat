@@ -4,7 +4,7 @@ import { View, Image, Pressable, Text } from 'react-native'
 import { PlayButton } from '../PlayButton/PlayButton'
 
 import { MessageType } from '../../types'
-import { ThemeContext } from '../../utils'
+import { ThemeContext, UserContext } from '../../utils'
 
 export interface VideoMessageProps {
   message: MessageType.DerivedVideo
@@ -17,6 +17,7 @@ export interface VideoMessageProps {
 export const VideoMessage = React.memo(
   ({ message, messageWidth, onVideoPress }: VideoMessageProps) => {
     const theme = React.useContext(ThemeContext)
+    const user = React.useContext(UserContext)
 
     const [generatedThumbnail, setGeneratedThumbNail] = React.useState(null);
 
@@ -29,6 +30,7 @@ export const VideoMessage = React.memo(
       message,
       messageWidth,
       theme,
+      user
     })
 
     const handlePress = () => {

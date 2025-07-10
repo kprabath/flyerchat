@@ -49,7 +49,7 @@ const styles = ({
     },
     captionText: {
       marginBottom: 10,
-      color: '#fff',
+      color:  user?.id === message.author.id ? '#fff'  :  undefined,
       padding: 12
     }
   })

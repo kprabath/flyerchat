@@ -1,16 +1,17 @@
 import { StyleSheet, Dimensions } from 'react-native'
 
-import { MessageType, Theme } from '../../types'
+import { MessageType, Theme, User } from '../../types'
 
 interface StyleProps {
   message: MessageType.DerivedVideo
   messageWidth: number
-  theme: Theme
+  theme: Theme;
+  user?: User
 }
 
 const { width: screenWidth } = Dimensions.get('window')
 
-export default ({ message, messageWidth, theme }: StyleProps) =>
+export default ({ message, messageWidth, theme  , user}: StyleProps) =>
   StyleSheet.create({
     container: {
       maxWidth: messageWidth,
@@ -29,6 +30,6 @@ export default ({ message, messageWidth, theme }: StyleProps) =>
     absoluteWrapper:{...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center'},
     captionText: {
       marginBottom: 10,
-      color: '#fff'
+      color:  user?.id === message.author.id ? '#fff'  :  undefined,
     }
   }) 

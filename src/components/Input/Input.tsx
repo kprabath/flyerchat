@@ -31,6 +31,7 @@ export interface InputTopLevelProps {
   textInputProps?: TextInputProps
   /** Custom React component to render after the SendButton */
   inputRightViewComponent?: () => React.ReactNode
+  placeholderText?: string
 }
 
 export interface InputAdditionalProps {
@@ -43,6 +44,7 @@ export type InputProps = InputTopLevelProps & InputAdditionalProps
 /** Bottom bar input component with a text input, attachment and
  * send buttons inside. By default hides send button when text input is empty. */
 export const Input = ({
+  placeholderText,
   attachmentButtonProps,
   attachmentCircularActivityIndicatorProps,
   isAttachmentUploading,
@@ -111,10 +113,10 @@ export const Input = ({
         },
       ]}
     >
-      <View style = {{flexDirection: "row"}}>
+      <View style={{ flexDirection: 'row' }}>
         <TextInput
           multiline
-          placeholder={l10n.inputPlaceholder}
+          placeholder={placeholderText ?? l10n.inputPlaceholder}
           placeholderTextColor={`${String(theme.colors.inputText)}80`}
           underlineColorAndroid='transparent'
           {...textInputProps}

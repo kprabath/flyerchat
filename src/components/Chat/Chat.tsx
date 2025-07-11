@@ -54,8 +54,8 @@ dayjs.extend(calendar)
 export type ChatTopLevelProps = InputTopLevelProps & MessageTopLevelProps
 
 export interface ChatProps extends ChatTopLevelProps {
-    /** Called when user taps on a image message */
-  onImagePress?:(message: MessageType.Image)=>void;
+  /** Called when user taps on a image message */
+  onImagePress?: (message: MessageType.Image) => void
   /** Called when user taps on a video message */
   onVideoPress?: (message: MessageType.Video) => void
   /** Called when user taps on a sound message */
@@ -95,7 +95,7 @@ export interface ChatProps extends ChatTopLevelProps {
   /** Indicates if someone is currently typing in the chat */
   isTyping?: boolean
   /** Override the default localized copy. */
-  l10nOverride?: Partial<Record<keyof (typeof l10n)[keyof typeof l10n], string>>
+  l10nOverride?: Partial<Record<keyof typeof l10n[keyof typeof l10n], string>>
   locale?: keyof typeof l10n
   messages: MessageType.Any[]
   /** Used for pagination (infinite scroll). Called when user scrolls
@@ -131,6 +131,7 @@ export interface ChatProps extends ChatTopLevelProps {
 
 /** Entry component, represents the complete chat */
 export const Chat = ({
+  placeholderText,
   customBottomComponent,
   customDateHeaderText,
   dateFormat,
@@ -265,7 +266,7 @@ export const Chat = ({
     async (message: MessageType.Image) => {
       if (twilioContextValue?.getMediaurl) {
         await twilioContextValue?.getMediaurl?.(message).then((url) => {
-          console.log("fetched new message url", url , message.uri)
+          console.log('fetched new message url', url, message.uri)
           message.uri = url
         })
       }
@@ -280,7 +281,7 @@ export const Chat = ({
       setImageSource({
         id: message.id,
         uri: message.uri,
-        isLocal: message?.metadata?.isLocal ||  message?.metadata?.local,
+        isLocal: message?.metadata?.isLocal || message?.metadata?.local,
         fileName: message?.name,
       })
       setImageViewIndex(0)
@@ -335,13 +336,11 @@ export const Chat = ({
   )
 
   const onDownloadPressLocal = React.useCallback(() => {
-    const selectedMessage = messages.find(
-      (e) => e.id === imageSource?.id
-    )
+    const selectedMessage = messages.find((e) => e.id === imageSource?.id)
     if (selectedMessage) {
       onDownloadPress?.(selectedMessage as MessageType.Any)
     }
-  }, [onDownloadPress,imageSource])
+  }, [onDownloadPress, imageSource])
 
   const renderItem = React.useCallback(
     ({ item: message }: { item: MessageType.DerivedAny; index: number }) => {
@@ -514,6 +513,7 @@ export const Chat = ({
                   <Input
                     {...{
                       ...unwrap(inputProps),
+                      placeholderText,
                       isAttachmentUploading,
                       onAttachmentPress,
                       onSendPress,

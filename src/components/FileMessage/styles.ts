@@ -19,6 +19,9 @@ const styles = ({
     },
     icon: {
       // tintColor: 'red',
+      width: 30,
+      height: 30,
+
     },
     iconContainer: {
       alignItems: 'center',

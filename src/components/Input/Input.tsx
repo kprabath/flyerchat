@@ -12,7 +12,13 @@ import {
 import { SendButton } from '../SendButton'
 import styles from './styles'
 import * as React from 'react'
-import { Animated, Keyboard, TextInput, TextInputProps, View } from 'react-native'
+import {
+  Animated,
+  Keyboard,
+  TextInput,
+  TextInputProps,
+  View,
+} from 'react-native'
 
 export interface InputTopLevelProps {
   /** Whether attachment is uploading. Will replace attachment button with a
@@ -31,6 +37,10 @@ export interface InputTopLevelProps {
   textInputProps?: TextInputProps
   /** Custom React component to render after the SendButton */
   inputRightViewComponent?: () => React.ReactNode
+  renderSendButton?: (props: {
+    isEditing?: boolean
+    handleSend?: (message: MessageType.PartialText) => void
+  }) => React.ReactNode
 }
 
 export interface InputAdditionalProps {
@@ -51,6 +61,7 @@ export const Input = ({
   sendButtonVisibilityMode,
   textInputProps,
   inputRightViewComponent,
+  renderSendButton,
 }: InputProps) => {
   const l10n = React.useContext(L10nContext)
   const theme = React.useContext(ThemeContext)
@@ -119,7 +130,7 @@ export const Input = ({
         },
       ]}
     >
-      <View style = {{flexDirection: "row"}}>
+      <View style={{ flexDirection: 'row' }}>
         <TextInput
           multiline
           placeholder={l10n.inputPlaceholder}
@@ -132,7 +143,11 @@ export const Input = ({
           value={value}
         />
 
-        {sendButtonVisibilityMode === 'always' ||
+        { renderSendButton ? renderSendButton?.({
+          isEditing: value.trim()?.length > 0,
+          handleSend,
+        }) :
+        sendButtonVisibilityMode === 'always' ||
         (sendButtonVisibilityMode === 'editing' && user && value.trim()) ? (
           <SendButton onPress={handleSend} />
         ) : null}

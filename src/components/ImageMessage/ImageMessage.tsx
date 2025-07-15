@@ -18,30 +18,26 @@ export const ImageMessage = React.memo(
     const theme = React.useContext(ThemeContext)
     const user = React.useContext(UserContext)
 
-    const size  = {
+    const size = {
       height: message.metadata?.height ?? 300,
       width: message.metadata?.width ?? 200,
     }
     const aspectRatio = size.width / (size.height || 1)
     const isMinimized = false
-    const {
-      horizontalImage,
-      minimizedImage,
-      verticalImage,
-      captionText,
-    } = styles({
-      aspectRatio,
-      message,
-      messageWidth,
-      theme,
-      user,
-    })
+    const { horizontalImage, minimizedImage, verticalImage, captionText } =
+      styles({
+        aspectRatio,
+        message,
+        messageWidth,
+        theme,
+        user,
+      })
 
     const renderImage = () => {
       return (
         <FastImage
           accessibilityRole='image'
-          resizeMode='cover'
+          resizeMode='contain'
           source={{ uri: message.uri }}
           style={
             isMinimized
@@ -56,7 +52,7 @@ export const ImageMessage = React.memo(
     return (
       <View>
         {message?.text ? <Text style={captionText}>{message.text}</Text> : null}
-        <View>{renderImage()}</View>
+        {renderImage()}
       </View>
     )
   },

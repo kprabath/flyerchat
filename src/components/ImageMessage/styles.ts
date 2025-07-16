@@ -15,10 +15,33 @@ const styles = ({
   user?: User
 }) =>
   StyleSheet.create({
+    container: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      padding: theme.insets.messageInsetsVertical,
+    },
+    iconContainer: {
+      alignItems: 'center',
+      // backgroundColor:
+      //   user?.id === message.author.id
+      //     ? `${String(theme.colors.sentMessageDocumentIcon)}33`
+      //     : `${String(theme.colors.receivedMessageDocumentIcon)}33`,
+      backgroundColor: 'white',
+      borderRadius: 21,
+      height: 42,
+      justifyContent: 'center',
+      width: 42,
+      marginRight: 10,
+    },
+
+    name:
+      user?.id === message.author.id
+        ? theme.fonts.sentMessageBodyTextStyle
+        : theme.fonts.receivedMessageBodyTextStyle,
     horizontalImage: {
       height: messageWidth / aspectRatio,
-      maxHeight: messageWidth,
       width: messageWidth,
+      borderRadius: 12,
     },
     minimizedImage: {
       borderRadius: 15,
@@ -53,13 +76,13 @@ const styles = ({
     },
     verticalImage: {
       height: messageWidth,
-      minWidth: 170,
-      width: messageWidth * aspectRatio,
+      width: messageWidth,
+      borderRadius: 12,
     },
     captionText: {
       marginBottom: 10,
-      color: user?.id === message.author.id ? '#fff' : undefined,
       padding: 12,
+      color: user?.id === message.author.id ? '#fff' : undefined,
       fontFamily: 'Manrope-Regular',
     },
   })

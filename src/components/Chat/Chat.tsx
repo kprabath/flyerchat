@@ -54,8 +54,8 @@ dayjs.extend(calendar)
 export type ChatTopLevelProps = InputTopLevelProps & MessageTopLevelProps
 
 export interface ChatProps extends ChatTopLevelProps {
-    /** Called when user taps on a image message */
-  onImagePress?:(message: MessageType.Image)=>void;
+  /** Called when user taps on a image message */
+  onImagePress?: (message: MessageType.Image) => void
   /** Called when user taps on a video message */
   onVideoPress?: (message: MessageType.Video) => void
   /** Called when user taps on a sound message */
@@ -95,7 +95,7 @@ export interface ChatProps extends ChatTopLevelProps {
   /** Indicates if someone is currently typing in the chat */
   isTyping?: boolean
   /** Override the default localized copy. */
-  l10nOverride?: Partial<Record<keyof (typeof l10n)[keyof typeof l10n], string>>
+  l10nOverride?: Partial<Record<keyof typeof l10n[keyof typeof l10n], string>>
   locale?: keyof typeof l10n
   messages: MessageType.Any[]
   /** Used for pagination (infinite scroll). Called when user scrolls
@@ -267,7 +267,7 @@ export const Chat = ({
     async (message: MessageType.Image) => {
       if (twilioContextValue?.getMediaurl) {
         await twilioContextValue?.getMediaurl?.(message).then((url) => {
-          console.log("fetched new message url", url , message.uri)
+          console.log('fetched new message url', url, message.uri)
           message.uri = url
         })
       }
@@ -282,7 +282,7 @@ export const Chat = ({
       setImageSource({
         id: message.id,
         uri: message.uri,
-        isLocal: message?.metadata?.isLocal ||  message?.metadata?.local,
+        isLocal: message?.metadata?.isLocal || message?.metadata?.local,
         fileName: message?.name,
       })
       setImageViewIndex(0)
@@ -337,22 +337,40 @@ export const Chat = ({
   )
 
   const onDownloadPressLocal = React.useCallback(() => {
-    const selectedMessage = messages.find(
-      (e) => e.id === imageSource?.id
-    )
+    const selectedMessage = messages.find((e) => e.id === imageSource?.id)
     if (selectedMessage) {
       onDownloadPress?.(selectedMessage as MessageType.Any)
     }
-  }, [onDownloadPress,imageSource])
+  }, [onDownloadPress, imageSource])
 
   const renderItem = React.useCallback(
     ({ item: message }: { item: MessageType.DerivedAny; index: number }) => {
-      const messageWidth =
+      let messageWidth =
         showUserAvatars &&
         message.type !== 'dateHeader' &&
         message.author.id !== user.id
           ? Math.floor(Math.min(size.width * 0.72, 440))
           : Math.floor(Math.min(size.width * 0.77, 440))
+
+      // For image messages, use the image's actual width (respecting aspect ratio)
+      if (
+        message.type === 'image' &&
+        message.metadata?.width &&
+        message.metadata?.height
+      ) {
+        const maxWidth = Math.floor(Math.min(size.width * 0.85, 500))
+        const imageWidth = message.metadata.width
+        const imageHeight = message.metadata.height
+        const aspectRatio = imageWidth / imageHeight
+
+        // Calculate the width that maintains aspect ratio within max bounds
+        const calculatedWidth =
+          aspectRatio >= 1
+            ? Math.min(maxWidth, imageWidth) // Horizontal/square image
+            : Math.min(maxWidth * aspectRatio, imageWidth) // Vertical image
+
+        messageWidth = Math.floor(calculatedWidth)
+      }
 
       const roundBorder =
         message.type !== 'dateHeader' && message.nextMessageInGroup

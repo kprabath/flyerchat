@@ -126,7 +126,8 @@ export interface ChatProps extends ChatTopLevelProps {
   /** Custom React component to render after the SendButton */
   inputRightViewComponent?: () => React.ReactNode
   pdfRightIcon?: ({ message }: { message: MessageType.File }) => React.ReactNode
-  fullImageViewMiddleComponent?: React.ReactNode
+  fullImageViewMiddleComponent?: React.ReactNode;
+  renderSendButton?: (props: { isEditing?: boolean ; handleSend?: (message: MessageType.PartialText) => void }) => React.ReactNode
 }
 
 /** Entry component, represents the complete chat */
@@ -172,6 +173,7 @@ export const Chat = ({
   inputRightViewComponent,
   pdfRightIcon,
   fullImageViewMiddleComponent,
+  renderSendButton
 }: ChatProps) => {
   const {
     container,
@@ -539,6 +541,7 @@ export const Chat = ({
                       sendButtonVisibilityMode,
                       textInputProps,
                       inputRightViewComponent,
+                      renderSendButton
                     }}
                   />
                 </KeyboardAccessoryView>

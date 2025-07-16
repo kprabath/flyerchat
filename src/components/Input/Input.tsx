@@ -12,7 +12,13 @@ import {
 import { SendButton } from '../SendButton'
 import styles from './styles'
 import * as React from 'react'
-import { Keyboard, TextInput, TextInputProps, View } from 'react-native'
+import {
+  Animated,
+  Keyboard,
+  TextInput,
+  TextInputProps,
+  View,
+} from 'react-native'
 
 export interface InputTopLevelProps {
   /** Whether attachment is uploading. Will replace attachment button with a
@@ -31,6 +37,10 @@ export interface InputTopLevelProps {
   textInputProps?: TextInputProps
   /** Custom React component to render after the SendButton */
   inputRightViewComponent?: () => React.ReactNode
+  renderSendButton?: (props: {
+    isEditing?: boolean
+    handleSend?: (message: MessageType.PartialText) => void
+  }) => React.ReactNode
 }
 
 export interface InputAdditionalProps {
@@ -51,6 +61,7 @@ export const Input = ({
   sendButtonVisibilityMode,
   textInputProps,
   inputRightViewComponent,
+  renderSendButton,
 }: InputProps) => {
   const l10n = React.useContext(L10nContext)
   const theme = React.useContext(ThemeContext)
@@ -59,7 +70,7 @@ export const Input = ({
 
   // Use `defaultValue` if provided
   const [text, setText] = React.useState(textInputProps?.defaultValue ?? '')
-  const [keyboardVisible, setKeyboardVisible] = React.useState(false)
+  const bottomSectionHeight = React.useRef(new Animated.Value(1)).current
 
   const value = textInputProps?.value ?? text
 
@@ -67,13 +78,21 @@ export const Input = ({
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
-        setKeyboardVisible(true)
+        Animated.timing(bottomSectionHeight, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: false,
+        }).start()
       }
     )
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        setKeyboardVisible(false)
+        Animated.timing(bottomSectionHeight, {
+          toValue: 1,
+          duration: 250,
+          useNativeDriver: false,
+        }).start()
       }
     )
 
@@ -111,7 +130,7 @@ export const Input = ({
         },
       ]}
     >
-      <View style = {{flexDirection: "row"}}>
+      <View style={{ flexDirection: 'row' }}>
         <TextInput
           multiline
           placeholder={l10n.inputPlaceholder}
@@ -124,36 +143,50 @@ export const Input = ({
           value={value}
         />
 
-        {sendButtonVisibilityMode === 'always' ||
+        { renderSendButton ? renderSendButton?.({
+          isEditing: value.trim()?.length > 0,
+          handleSend,
+        }) :
+        sendButtonVisibilityMode === 'always' ||
         (sendButtonVisibilityMode === 'editing' && user && value.trim()) ? (
           <SendButton onPress={handleSend} />
         ) : null}
       </View>
 
-      {!keyboardVisible && (
-        <View style={subcontainer}>
-          {user &&
-            (isAttachmentUploading ? (
-              <CircularActivityIndicator
-                {...{
-                  ...attachmentCircularActivityIndicatorProps,
-                  color: theme.colors.inputText,
-                  style: marginRight,
-                }}
+      <Animated.View
+        style={[
+          subcontainer,
+          {
+            height: bottomSectionHeight.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 50],
+            }),
+            opacity: bottomSectionHeight,
+            overflow: 'hidden',
+          },
+        ]}
+      >
+        {user &&
+          (isAttachmentUploading ? (
+            <CircularActivityIndicator
+              {...{
+                ...attachmentCircularActivityIndicatorProps,
+                color: theme.colors.inputText,
+                style: marginRight,
+              }}
+            />
+          ) : (
+            !!onAttachmentPress && (
+              <AttachmentButton
+                {...unwrap(attachmentButtonProps)}
+                onPress={onAttachmentPress}
               />
-            ) : (
-              !!onAttachmentPress && (
-                <AttachmentButton
-                  {...unwrap(attachmentButtonProps)}
-                  onPress={onAttachmentPress}
-                />
-              )
-            ))}
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {inputRightViewComponent?.()}
-          </View>
+            )
+          ))}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {inputRightViewComponent?.()}
         </View>
-      )}
+      </Animated.View>
     </View>
   )
 }

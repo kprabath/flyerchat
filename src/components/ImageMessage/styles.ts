@@ -1,6 +1,5 @@
-import { StyleSheet } from 'react-native'
-
 import { MessageType, Theme, User } from '../../types'
+import { StyleSheet } from 'react-native'
 
 const styles = ({
   aspectRatio,
@@ -76,14 +75,15 @@ const styles = ({
       marginVertical: theme.insets.messageInsetsVertical,
     },
     verticalImage: {
-      height: messageWidth / aspectRatio,
+      height: messageWidth,
       width: messageWidth,
       borderRadius: 12,
     },
     captionText: {
       marginBottom: 10,
-      color: '#fff',
       padding: 12,
+      color: user?.id === message.author.id ? '#fff' : undefined,
+      fontFamily: 'Manrope-Regular',
     },
   })
 

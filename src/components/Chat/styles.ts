@@ -9,7 +9,7 @@ export default ({ theme }: { theme: Theme }) =>
       flex: 1,
     },
     typingAnimation: {
-        backgroundColor: theme.colors.secondary,
+        backgroundColor: "#F0F0F0",
         height: 40,
         width: 80,
         borderRadius: 50,

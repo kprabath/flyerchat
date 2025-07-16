@@ -37,7 +37,7 @@ export const ImageMessage = React.memo(
       return (
         <FastImage
           accessibilityRole='image'
-          resizeMode='contain'
+          resizeMode='cover'
           source={{ uri: message.uri }}
           style={
             isMinimized

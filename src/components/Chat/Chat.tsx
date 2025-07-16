@@ -356,7 +356,7 @@ export const Chat = ({
         message.metadata?.width &&
         message.metadata?.height
       ) {
-        const maxWidth = Math.floor(Math.min(size.width * 0.77, 440))
+        const maxWidth = Math.floor(Math.min(size.width * 0.85, 500))
         const imageWidth = message.metadata.width
         const imageHeight = message.metadata.height
         const aspectRatio = imageWidth / imageHeight

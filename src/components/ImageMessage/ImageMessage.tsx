@@ -1,9 +1,11 @@
-import { MessageType, Size } from '../../types'
-import { ThemeContext, UserContext, useTwilio } from '../../utils'
-import styles from './styles'
 import * as React from 'react'
 import { Image, Text, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
+
+import { MessageType, Size } from '../../types'
+
+import { ThemeContext, UserContext, useTwilio } from '../../utils'
+import styles from './styles'
 
 export interface ImageMessageProps {
   message: MessageType.DerivedImage
@@ -24,14 +26,35 @@ export const ImageMessage = React.memo(
     }
     const aspectRatio = size.width / (size.height || 1)
     const isMinimized = false
-    const { horizontalImage, minimizedImage, verticalImage, captionText } =
-      styles({
-        aspectRatio,
-        message,
-        messageWidth,
-        theme,
-        user,
-      })
+    const {
+      horizontalImage,
+      minimizedImage,
+      verticalImage,
+      captionText,
+      container,
+      iconContainer,
+      textContainer,
+      name,
+    } = styles({
+      aspectRatio,
+      message,
+      messageWidth,
+      theme,
+      user,
+    })
+
+    if (message?.metadata?.isFileExpired) {
+      return (
+        <View style={container}>
+          <View style={iconContainer}>
+            <Image source={require('../../assets/file-times.png')} />
+          </View>
+          <View style={textContainer}>
+            <Text style={name}>ファイルの保存期間が過ぎました</Text>
+          </View>
+        </View>
+      )
+    }
 
     const renderImage = () => {
       return (

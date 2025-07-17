@@ -133,13 +133,14 @@ export const Message = React.memo(
     })
 
     // Will be added back in the future
-    // if (message.type === 'dateHeader') {
-    //   return (
-    //     <View style={dateHeader}>
-    //       <Text style={theme.fonts.dateDividerTextStyle}>{message.text}</Text>
-    //     </View>
-    //   )
-    // }
+    if (message.type === 'dateHeader') {
+      return null
+      // return (
+      //   <View style={dateHeader}>
+      //     <Text style={theme.fonts.dateDividerTextStyle}>{message.text}</Text>
+      //   </View>
+      // )
+    }
 
     const renderBubbleContainer = () => {
       const child = renderMessage()

@@ -132,14 +132,14 @@ export const Message = React.memo(
       theme,
     })
 
-
-    if (message.type === 'dateHeader') {
-      return (
-        <View style={dateHeader}>
-          <Text style={theme.fonts.dateDividerTextStyle}>{message.text}</Text>
-        </View>
-      )
-    }
+    // Will be added back in the future
+    // if (message.type === 'dateHeader') {
+    //   return (
+    //     <View style={dateHeader}>
+    //       <Text style={theme.fonts.dateDividerTextStyle}>{message.text}</Text>
+    //     </View>
+    //   )
+    // }
 
     const renderBubbleContainer = () => {
       const child = renderMessage()
@@ -232,7 +232,9 @@ export const Message = React.memo(
           return oneOf(
             renderDeeplinkMessage,
             <DeeplinkMessage
-              message={excludeDerivedMessageProps(message) as MessageType.Deeplink}
+              message={
+                excludeDerivedMessageProps(message) as MessageType.Deeplink
+              }
               onDeeplinkPress={onDeeplinkPress}
             />
           )(

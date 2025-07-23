@@ -47,7 +47,7 @@ export const ImageMessage = React.memo(
       return (
         <View style={container}>
           <View style={iconContainer}>
-            <Image source={require('../../assets/file-times.png')} />
+            <Image resizeMode='contain' source={require('../../assets/file-times.png')} />
           </View>
           <View style={textContainer}>
             <Text style={name}>ファイルの保存期間が過ぎました</Text>

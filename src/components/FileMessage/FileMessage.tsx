@@ -44,7 +44,7 @@ export const FileMessage = ({ message }: FileMessageProps) => {
     return (
       <View style={container}>
         <View style={iconContainer}>
-          <Image source={require('../../assets/file-times.png')} style={icon} />
+          <Image resizeMode='contain' source={require('../../assets/file-times.png')} style={icon} />
         </View>
         <View style={textContainer}>
           <Text style={name}>ファイルの保存期間が過ぎました</Text>

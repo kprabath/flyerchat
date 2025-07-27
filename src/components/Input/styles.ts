@@ -7,13 +7,12 @@ export default ({ theme }: { theme: Theme }) =>
     subcontainer: {
       alignItems: 'center',
       flexDirection: 'row',
-      justifyContent: "space-between",
-      paddingTop: 8
+      justifyContent: 'space-between',
+      paddingTop: 8,
     },
     container: {
-      paddingHorizontal: 24,
-      paddingVertical: 20,
-      marginBottom: 20,
+      paddingHorizontal: 16,
+      paddingVertical: 16,
       marginHorizontal: 16,
     },
     input: {
@@ -24,7 +23,7 @@ export default ({ theme }: { theme: Theme }) =>
       // Fixes default paddings for Android
       paddingBottom: 0,
       paddingTop: 0,
-      fontFamily: "Manrope-Regular"
+      fontFamily: 'Manrope-Regular',
     },
     marginRight: {
       marginRight: 16,

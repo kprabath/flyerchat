@@ -261,10 +261,16 @@ export const Message = React.memo(
           }}
         />
         <Pressable
-          onLongPress={() =>
-            onMessageLongPress?.(excludeDerivedMessageProps(message))
+          onLongPress={
+            message?.metadata?.isFileExpired
+              ? null
+              : () => onMessageLongPress?.(excludeDerivedMessageProps(message))
           }
-          onPress={() => onMessagePress?.(excludeDerivedMessageProps(message))}
+          onPress={
+            message?.metadata?.isFileExpired
+              ? null
+              : () => onMessagePress?.(excludeDerivedMessageProps(message))
+          }
           style={pressable}
         >
           {renderBubbleContainer()}

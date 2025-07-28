@@ -1,18 +1,20 @@
+import * as React from 'react'
+import { Linking, Text, View } from 'react-native'
+import ParsedText from 'react-native-parsed-text'
+
 import {
   LinkPreview,
   PreviewData,
   REGEX_LINK,
 } from '@flyerhq/react-native-link-preview'
-import * as React from 'react'
-import { Linking, Text, View } from 'react-native'
-import ParsedText from 'react-native-parsed-text'
 
 import { MessageType } from '../../types'
+
 import {
-  excludeDerivedMessageProps,
-  getUserName,
   ThemeContext,
   UserContext,
+  excludeDerivedMessageProps,
+  getUserName,
 } from '../../utils'
 import styles from './styles'
 

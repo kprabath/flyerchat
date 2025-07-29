@@ -222,6 +222,7 @@ export const Message = React.memo(
                 onPreviewDataFetched,
                 showName,
                 usePreviewData,
+                onDeeplinkPress
               }}
             />
           )(

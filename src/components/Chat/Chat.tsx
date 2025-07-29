@@ -61,7 +61,7 @@ export interface ChatProps extends ChatTopLevelProps {
   /** Called when user taps on a sound message */
   onSoundPress?: (message: MessageType.Audio) => void
   /** Called when user taps on a deeplink message */
-  onDeeplinkPress?: (message: MessageType.Deeplink) => void
+  onDeeplinkPress?: (message: MessageType.Any) => void
   /** Twilio context value to provide Twilio functionality throughout the chat */
   twilioContextValue?: TwilioContextType
   /** Allows you to replace the default Input widget e.g. if you want to create a channel view. */

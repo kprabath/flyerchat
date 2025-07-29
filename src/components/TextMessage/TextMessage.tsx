@@ -33,7 +33,8 @@ export interface TextMessageProps extends TextMessageTopLevelProps {
   enableAnimation?: boolean
   message: MessageType.DerivedText
   messageWidth: number
-  showName: boolean
+  showName: boolean;
+  onDeeplinkPress?:(message: MessageType.Any) => void
 }
 
 export const TextMessage = ({
@@ -43,6 +44,7 @@ export const TextMessage = ({
   onPreviewDataFetched,
   showName,
   usePreviewData,
+  onDeeplinkPress
 }: TextMessageProps) => {
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
@@ -71,6 +73,10 @@ export const TextMessage = ({
   }
 
   const handleUrlPress = (url: string) => {
+    if (onDeeplinkPress)  {
+      onDeeplinkPress?.(message)
+      return
+    }
     const uri = url.toLowerCase().startsWith('http') ? url : `https://${url}`
 
     Linking.openURL(uri)

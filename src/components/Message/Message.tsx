@@ -1,21 +1,23 @@
-import { oneOf } from '@flyerhq/react-native-link-preview'
 import * as React from 'react'
 import { Pressable, Text, View } from 'react-native'
 
+import { oneOf } from '@flyerhq/react-native-link-preview'
+
 import { MessageType } from '../../types'
+
 import {
-  excludeDerivedMessageProps,
   ThemeContext,
   UserContext,
+  excludeDerivedMessageProps,
 } from '../../utils'
 import { Avatar } from '../Avatar'
+import { DeeplinkMessage } from '../Deeplink/DeeplinkMessage'
 import { FileMessage } from '../FileMessage'
 import { ImageMessage } from '../ImageMessage'
 import { SoundMessage } from '../SoundMessage/SoundMessage'
 import { StatusIcon } from '../StatusIcon'
 import { TextMessage, TextMessageTopLevelProps } from '../TextMessage'
 import { VideoMessage } from '../VideoMessage/VideoMessage'
-import { DeeplinkMessage } from '../Deeplink/DeeplinkMessage'
 import styles from './styles'
 
 export interface MessageTopLevelProps extends TextMessageTopLevelProps {
@@ -260,10 +262,16 @@ export const Message = React.memo(
           }}
         />
         <Pressable
-          onLongPress={() =>
-            onMessageLongPress?.(excludeDerivedMessageProps(message))
+          onLongPress={
+            message?.metadata?.isFileExpired
+              ? null
+              : () => onMessageLongPress?.(excludeDerivedMessageProps(message))
           }
-          onPress={() => onMessagePress?.(excludeDerivedMessageProps(message))}
+          onPress={
+            message?.metadata?.isFileExpired
+              ? null
+              : () => onMessagePress?.(excludeDerivedMessageProps(message))
+          }
           style={pressable}
         >
           {renderBubbleContainer()}

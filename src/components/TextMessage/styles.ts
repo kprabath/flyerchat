@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 import { MessageType, Theme, User } from '../../types'
+
 import { getUserAvatarNameColor } from '../../utils'
 
 const styles = ({
@@ -31,10 +32,13 @@ const styles = ({
       user?.id === message.author.id
         ? theme.fonts.sentMessageLinkTitleTextStyle
         : theme.fonts.receivedMessageLinkTitleTextStyle,
-    text:
-      user?.id === message.author.id
+
+    text: {
+      ...(user?.id === message.author.id
         ? theme.fonts.sentMessageBodyTextStyle
-        : theme.fonts.receivedMessageBodyTextStyle,
+        : theme.fonts.receivedMessageBodyTextStyle),
+      fontSize: 16,
+    },
     textContainer: {
       marginHorizontal: theme.insets.messageInsetsHorizontal,
       marginVertical: theme.insets.messageInsetsVertical,

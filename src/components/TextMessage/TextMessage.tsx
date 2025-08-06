@@ -113,7 +113,12 @@ export const TextMessage = ({
           {
             onPress: handleUrlPress,
             pattern: REGEX_LINK,
-            style: [text, { textDecorationLine: 'underline' }],
+            style: [text, { textDecorationLine: 'underline'  }],
+          },
+          {
+            onPress: handleUrlPress,
+            pattern: /#(\w+)/,
+            style: [text, { textDecorationLine: 'underline' , color: "red" }],
           },
         ]}
         style={text}
@@ -160,7 +165,30 @@ export const TextMessage = ({
           ? renderPreviewHeader(getUserName(message.author))
           : null
       }
-      <Text style={text}>{message.text}</Text>
+      <ParsedText
+        accessibilityRole='link'
+        parse={[
+          {
+            onPress: handleEmailPress,
+            style: [text, { textDecorationLine: 'underline' }],
+            type: 'email',
+          },
+          {
+            onPress: handleUrlPress,
+            pattern: REGEX_LINK,
+            style: [text, { textDecorationLine: 'underline'  }],
+          },
+          {
+            onPress: handleUrlPress,
+            pattern: /#(\w+)#/,
+            style: [text, { textDecorationLine: 'underline' , color: "#828282" }],
+            renderText: (matchingString: string, matches: string[]) =>  matches?.at(1) ?? matchingString,
+          }
+        ]}
+        style={text}
+      >
+        {message.text}
+      </ParsedText>
     </View>
   )
 }

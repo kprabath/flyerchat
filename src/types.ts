@@ -208,17 +208,18 @@ export interface ThemeBorders {
 }
 
 export interface ThemeColors {
-  background: ColorValue
-  error: ColorValue
-  inputBackground: ColorValue
-  inputText: ColorValue
-  primary: ColorValue
-  secondary: ColorValue
-  receivedMessageDocumentIcon: ColorValue
-  sentMessageDocumentIcon: ColorValue
-  userAvatarImageBackground: ColorValue
-  userAvatarNameColors: ColorValue[]
-  footerBackground: ColorValue
+  background: ColorValue;
+  error: ColorValue;
+  inputBackground: ColorValue;
+  inputText: ColorValue;
+  primary: ColorValue;
+  secondary: ColorValue;
+  receivedMessageDocumentIcon: ColorValue;
+  sentMessageDocumentIcon: ColorValue;
+  userAvatarImageBackground: ColorValue;
+  userAvatarNameColors: ColorValue[];
+  footerBackground: ColorValue;
+  black: ColorValue;
 }
 
 export interface ThemeFonts {

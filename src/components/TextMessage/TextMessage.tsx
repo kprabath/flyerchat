@@ -1,18 +1,20 @@
+import * as React from 'react'
+import { Linking, Text, View } from 'react-native'
+import ParsedText from 'react-native-parsed-text'
+
 import {
   LinkPreview,
   PreviewData,
   REGEX_LINK,
 } from '@flyerhq/react-native-link-preview'
-import * as React from 'react'
-import { Linking, Text, View } from 'react-native'
-import ParsedText from 'react-native-parsed-text'
 
 import { MessageType } from '../../types'
+
 import {
-  excludeDerivedMessageProps,
-  getUserName,
   ThemeContext,
   UserContext,
+  excludeDerivedMessageProps,
+  getUserName,
 } from '../../utils'
 import styles from './styles'
 
@@ -33,7 +35,8 @@ export interface TextMessageProps extends TextMessageTopLevelProps {
   enableAnimation?: boolean
   message: MessageType.DerivedText
   messageWidth: number
-  showName: boolean
+  showName: boolean;
+  onDeeplinkPress?:(message: MessageType.Any) => void
 }
 
 export const TextMessage = ({
@@ -43,6 +46,7 @@ export const TextMessage = ({
   onPreviewDataFetched,
   showName,
   usePreviewData,
+  onDeeplinkPress
 }: TextMessageProps) => {
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
@@ -71,6 +75,10 @@ export const TextMessage = ({
   }
 
   const handleUrlPress = (url: string) => {
+    if (onDeeplinkPress)  {
+      onDeeplinkPress?.(message)
+      return
+    }
     const uri = url.toLowerCase().startsWith('http') ? url : `https://${url}`
 
     Linking.openURL(uri)
@@ -105,7 +113,12 @@ export const TextMessage = ({
           {
             onPress: handleUrlPress,
             pattern: REGEX_LINK,
-            style: [text, { textDecorationLine: 'underline' }],
+            style: [text, { textDecorationLine: 'underline'  }],
+          },
+          {
+            onPress: handleUrlPress,
+            pattern: /#(\w+)/,
+            style: [text, { textDecorationLine: 'underline' , color: "red" }],
           },
         ]}
         style={text}
@@ -152,7 +165,30 @@ export const TextMessage = ({
           ? renderPreviewHeader(getUserName(message.author))
           : null
       }
-      <Text style={text}>{message.text}</Text>
+      <ParsedText
+        accessibilityRole='link'
+        parse={[
+          {
+            onPress: handleEmailPress,
+            style: [text, { textDecorationLine: 'underline' }],
+            type: 'email',
+          },
+          {
+            onPress: handleUrlPress,
+            pattern: REGEX_LINK,
+            style: [text, { textDecorationLine: 'underline'  }],
+          },
+          {
+            onPress: handleUrlPress,
+            pattern: /#(\w+)#/,
+            style: [text, { textDecorationLine: 'underline' , color: "#828282" }],
+            renderText: (matchingString: string, matches: string[]) =>  matches?.at(1) ?? matchingString,
+          }
+        ]}
+        style={text}
+      >
+        {message.text}
+      </ParsedText>
     </View>
   )
 }

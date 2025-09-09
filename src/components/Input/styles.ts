@@ -1,8 +1,14 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
 
-import { Theme } from '../../types';
+import { Theme } from '../../types'
 
-export default ({ theme, isKeyboardVisible }: { theme: Theme; isKeyboardVisible: boolean }) =>
+export default ({
+  theme,
+  isKeyboardVisible,
+}: {
+  theme: Theme
+  isKeyboardVisible: boolean
+}) =>
   StyleSheet.create({
     subcontainer: {
       alignItems: 'center',
@@ -43,4 +49,4 @@ export default ({ theme, isKeyboardVisible }: { theme: Theme; isKeyboardVisible:
       flexDirection: 'row',
       position: 'relative',
     },
-  });
+  })

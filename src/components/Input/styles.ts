@@ -49,4 +49,12 @@ export default ({
       flexDirection: 'row',
       position: 'relative',
     },
+    inputTextOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      pointerEvents: 'none',
+      paddingRight: 30,
+    },
   })

@@ -1,50 +1,57 @@
-import * as React from 'react';
-import { Animated, Keyboard, Text, TextInput, TextInputProps, View } from 'react-native';
+import * as React from 'react'
+import {
+  Animated,
+  Keyboard,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from 'react-native'
 
-import { MessageType } from '../../types';
+import { MessageType } from '../../types'
 
-import { L10nContext, ThemeContext, UserContext, unwrap } from '../../utils';
+import { L10nContext, ThemeContext, UserContext, unwrap } from '../../utils'
 import {
   AttachmentButton,
   AttachmentButtonAdditionalProps,
   AttachmentButtonProps,
-} from '../AttachmentButton';
+} from '../AttachmentButton'
 import {
   CircularActivityIndicator,
   CircularActivityIndicatorProps,
-} from '../CircularActivityIndicator';
-import { SendButton } from '../SendButton';
-import styles from './styles';
+} from '../CircularActivityIndicator'
+import { SendButton } from '../SendButton'
+import styles from './styles'
 
 export interface InputTopLevelProps {
   /** Whether attachment is uploading. Will replace attachment button with a
    * {@link CircularActivityIndicator}. Since we don't have libraries for
    * managing media in dependencies we have no way of knowing if
    * something is uploading so you need to set this manually. */
-  isAttachmentUploading?: boolean;
+  isAttachmentUploading?: boolean
   /** @see {@link AttachmentButtonProps.onPress} */
-  onAttachmentPress?: () => void;
+  onAttachmentPress?: () => void
   /** Will be called on {@link SendButton} tap. Has {@link MessageType.PartialText} which can
    * be transformed to {@link MessageType.Text} and added to the messages list. */
-  onSendPress: (message: MessageType.PartialText) => void;
+  onSendPress: (message: MessageType.PartialText) => void
   /** Controls the visibility behavior of the {@link SendButton} based on the
    * `TextInput` state. Defaults to `editing`. */
-  sendButtonVisibilityMode?: 'always' | 'editing';
-  textInputProps?: TextInputProps;
+  sendButtonVisibilityMode?: 'always' | 'editing'
+  textInputProps?: TextInputProps
   /** Custom React component to render after the SendButton */
-  inputRightViewComponent?: () => React.ReactNode;
+  inputRightViewComponent?: () => React.ReactNode
   renderSendButton?: (props: {
-    isEditing?: boolean;
-    handleSend?: (message: MessageType.PartialText) => void;
-  }) => React.ReactNode;
+    isEditing?: boolean
+    handleSend?: (message: MessageType.PartialText) => void
+  }) => React.ReactNode
 }
 
 export interface InputAdditionalProps {
-  attachmentButtonProps?: AttachmentButtonAdditionalProps;
-  attachmentCircularActivityIndicatorProps?: CircularActivityIndicatorProps;
+  attachmentButtonProps?: AttachmentButtonAdditionalProps
+  attachmentCircularActivityIndicatorProps?: CircularActivityIndicatorProps
 }
 
-export type InputProps = InputTopLevelProps & InputAdditionalProps;
+export type InputProps = InputTopLevelProps & InputAdditionalProps
 
 /** Bottom bar input component with a text input, attachment and
  * send buttons inside. By default hides send button when text input is empty. */
@@ -59,62 +66,102 @@ export const Input = ({
   inputRightViewComponent,
   renderSendButton,
 }: InputProps) => {
-  const l10n = React.useContext(L10nContext);
-  const theme = React.useContext(ThemeContext);
-  const user = React.useContext(UserContext);
-  const [isKeyboardVisible, setIsKeyboardVisible] = React.useState(false);
-  const { container, input, marginRight, subcontainer, inputText, inputTextContainer } = styles({
+  const l10n = React.useContext(L10nContext)
+  const theme = React.useContext(ThemeContext)
+  const user = React.useContext(UserContext)
+  const [isKeyboardVisible, setIsKeyboardVisible] = React.useState(false)
+  const {
+    container,
+    input,
+    marginRight,
+    subcontainer,
+    inputText,
+    inputTextOverlay,
+    inputTextContainer,
+  } = styles({
     theme,
     isKeyboardVisible,
-  });
+  })
 
   // Use `defaultValue` if provided
-  const [text, setText] = React.useState(textInputProps?.defaultValue ?? '');
-  const bottomSectionHeight = React.useRef(new Animated.Value(1)).current;
+  const [text, setText] = React.useState(textInputProps?.defaultValue ?? '')
+  const bottomSectionOpacity = React.useRef(new Animated.Value(1)).current
+  const bottomSectionHeight = React.useRef(new Animated.Value(50)).current
 
-  const value = textInputProps?.value ?? text;
+  const value = textInputProps?.value ?? text
 
   React.useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      setIsKeyboardVisible(true);
-      Animated.timing(bottomSectionHeight, {
-        toValue: 0,
-        duration: 250,
-        useNativeDriver: false,
-      }).start();
-    });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setIsKeyboardVisible(false);
-      Animated.timing(bottomSectionHeight, {
-        toValue: 1,
-        duration: 250,
-        useNativeDriver: false,
-      }).start();
-    });
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        // Delay state change to avoid jumping
+        setTimeout(() => {
+          setIsKeyboardVisible(true)
+        }, 50)
+
+        // Animate bottom section to hidden with sequential timing
+        Animated.sequence([
+          Animated.timing(bottomSectionOpacity, {
+            toValue: 0,
+            duration: 150,
+            useNativeDriver: false,
+          }),
+          Animated.timing(bottomSectionHeight, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: false,
+          }),
+        ]).start()
+      }
+    )
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        // Delay state change to avoid jumping
+        setTimeout(() => {
+          setIsKeyboardVisible(false)
+        }, 50)
+
+        // Animate bottom section to visible with sequential timing
+        Animated.sequence([
+          Animated.timing(bottomSectionHeight, {
+            toValue: 50,
+            duration: 200,
+            useNativeDriver: false,
+          }),
+          Animated.timing(bottomSectionOpacity, {
+            toValue: 1,
+            duration: 150,
+            useNativeDriver: false,
+          }),
+        ]).start()
+      }
+    )
 
     return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
+      keyboardDidShowListener.remove()
+      keyboardDidHideListener.remove()
+    }
+  }, [])
 
   const handleChangeText = (newText: string) => {
     // Track local state in case `onChangeText` is provided and `value` is not
-    setText(newText);
-    textInputProps?.onChangeText?.(newText);
-  };
+    setText(newText)
+    textInputProps?.onChangeText?.(newText)
+  }
 
   const handleSend = () => {
-    const trimmedValue = value.trim();
+    const trimmedValue = value.trim()
 
     // Impossible to test since button is not visible when value is empty.
     // Additional check for the keyboard input.
     /* istanbul ignore next */
     if (trimmedValue) {
-      onSendPress({ text: trimmedValue, type: 'text' });
-      setText('');
+      onSendPress({ text: trimmedValue, type: 'text' })
+      setText('')
     }
-  };
+  }
 
   return (
     <View
@@ -124,32 +171,41 @@ export const Input = ({
           backgroundColor: theme.colors.inputBackground,
           borderRadius: theme.borders.inputBorderRadius,
         },
-      ]}>
+      ]}
+    >
       <View style={inputTextContainer}>
-        <TextInput
-          multiline
-          numberOfLines={5}
-          placeholder={l10n.inputPlaceholder}
-          placeholderTextColor={`${String(theme.colors.inputText)}80`}
-          underlineColorAndroid="transparent"
-          {...textInputProps}
-          // Keep our implementation but allow user to use these `TextInputProps`
-          style={[
-            input,
-            textInputProps?.style,
-            {
-              color: isKeyboardVisible ? theme.colors.black : 'transparent',
-            },
-          ]}
-          onChangeText={handleChangeText}
-          value={value}
-        />
+        <View style={{ flex: 1 }}>
+          <TextInput
+            multiline
+            numberOfLines={5}
+            placeholder={l10n.inputPlaceholder}
+            placeholderTextColor={`${String(theme.colors.inputText)}80`}
+            underlineColorAndroid='transparent'
+            {...textInputProps}
+            // Keep our implementation but allow user to use these `TextInputProps`
+            style={[
+              input,
+              textInputProps?.style,
+              {
+                color: isKeyboardVisible ? theme.colors.black : 'transparent',
+              },
+            ]}
+            onChangeText={handleChangeText}
+            value={value}
+          />
+        </View>
 
         {/* Truncated text overlay when keyboard is hidden */}
         {!isKeyboardVisible && value && (
-          <Text style={[input, inputText]} numberOfLines={1} ellipsizeMode="head">
-            {value}
-          </Text>
+          <View style={inputTextOverlay}>
+            <Text
+              style={[input, inputText]}
+              numberOfLines={1}
+              ellipsizeMode='head'
+            >
+              {value}
+            </Text>
+          </View>
         )}
 
         {renderSendButton ? (
@@ -167,14 +223,12 @@ export const Input = ({
         style={[
           subcontainer,
           {
-            height: bottomSectionHeight.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, 50],
-            }),
-            opacity: bottomSectionHeight,
+            height: bottomSectionHeight,
+            opacity: bottomSectionOpacity,
             overflow: 'hidden',
           },
-        ]}>
+        ]}
+      >
         {user &&
           (isAttachmentUploading ? (
             <CircularActivityIndicator
@@ -186,7 +240,10 @@ export const Input = ({
             />
           ) : (
             !!onAttachmentPress && (
-              <AttachmentButton {...unwrap(attachmentButtonProps)} onPress={onAttachmentPress} />
+              <AttachmentButton
+                {...unwrap(attachmentButtonProps)}
+                onPress={onAttachmentPress}
+              />
             )
           ))}
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -194,5 +251,5 @@ export const Input = ({
         </View>
       </Animated.View>
     </View>
-  );
-};
+  )
+}

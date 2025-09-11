@@ -3,6 +3,7 @@ import {
   Animated,
   Keyboard,
   Platform,
+  Text,
   TextInput,
   TextInputProps,
   View,
@@ -50,7 +51,7 @@ export interface InputAdditionalProps {
   attachmentButtonProps?: AttachmentButtonAdditionalProps
   attachmentCircularActivityIndicatorProps?: CircularActivityIndicatorProps
 }
-
+export const IS_ANDROID = Platform.OS === 'android'
 export type InputProps = InputTopLevelProps & InputAdditionalProps
 
 /** Bottom bar input component with a text input, attachment and
@@ -70,15 +71,7 @@ export const Input = ({
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
   const [isKeyboardVisible, setIsKeyboardVisible] = React.useState(false)
-  const {
-    container,
-    input,
-    marginRight,
-    subcontainer,
-    inputText,
-    inputTextOverlay,
-    inputTextContainer,
-  } = styles({
+  const { container, input, marginRight, subcontainer, inputText } = styles({
     theme,
     isKeyboardVisible,
   })
@@ -161,7 +154,7 @@ export const Input = ({
   }
 
   const handleContentSizeChange = (event: any) => {
-    if (Platform.OS === 'android') {
+    if (IS_ANDROID) {
       const { height } = event.nativeEvent.contentSize
       const newHeight = Math.max(40, Math.min(100, height + 20)) // +20 for padding
       setInputHeight(newHeight)
@@ -190,16 +183,20 @@ export const Input = ({
         },
       ]}
     >
-      <View style={inputTextContainer}>
-        <View style={{ flex: 1 }}>
+      <View style={{ flexDirection: 'row' }}>
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
           <TextInput
             multiline
             numberOfLines={5}
             placeholder={l10n.inputPlaceholder}
             placeholderTextColor={`${String(theme.colors.inputText)}80`}
             underlineColorAndroid='transparent'
-            textAlignVertical={Platform.OS === 'android' ? 'top' : 'auto'}
-            scrollEnabled={Platform.OS === 'android' ? isKeyboardVisible : true}
+            textAlignVertical={IS_ANDROID ? 'top' : 'auto'}
+            scrollEnabled={IS_ANDROID ? isKeyboardVisible : true}
             onContentSizeChange={handleContentSizeChange}
             {...textInputProps}
             // Keep our implementation but allow user to use these `TextInputProps`
@@ -208,10 +205,9 @@ export const Input = ({
               textInputProps?.style,
               {
                 color: isKeyboardVisible ? theme.colors.black : 'transparent',
-                ...(Platform.OS === 'android'
+                ...(IS_ANDROID
                   ? {
                       height: inputHeight,
-                      textAlignVertical: 'top',
                     }
                   : {}),
               },
@@ -220,6 +216,30 @@ export const Input = ({
             value={value}
           />
         </View>
+
+        {/* Truncated text overlay when keyboard is hidden */}
+        {!isKeyboardVisible && value && (
+          <View
+            style={[
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                pointerEvents: 'none',
+                paddingRight: 30,
+              },
+            ]}
+          >
+            <Text
+              style={[input, inputText]}
+              numberOfLines={1}
+              ellipsizeMode='head'
+            >
+              {value}
+            </Text>
+          </View>
+        )}
 
         {renderSendButton ? (
           renderSendButton?.({

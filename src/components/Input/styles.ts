@@ -42,7 +42,7 @@ export default ({
     },
     inputText: {
       position: 'absolute',
-      top: 0,
+      top: Platform.OS === 'ios' ? 0 : 10,
       left: 0,
       right: 0,
       color: theme.colors.black,

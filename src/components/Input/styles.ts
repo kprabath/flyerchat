@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 import { Theme } from '../../types'
 
@@ -25,9 +25,14 @@ export default ({
       ...theme.fonts.inputTextStyle,
       color: theme.colors.inputText,
       flex: 1,
-      maxHeight: isKeyboardVisible ? 100 : 40,
-      // maxHeight: 100,
-      // Fixes default paddings for Android
+      ...(Platform.OS === 'android'
+        ? {
+            minHeight: 40,
+            maxHeight: 100,
+          }
+        : {
+            maxHeight: isKeyboardVisible ? 100 : 40,
+          }),
       paddingBottom: 0,
       paddingTop: 0,
       fontFamily: 'Manrope-Regular',

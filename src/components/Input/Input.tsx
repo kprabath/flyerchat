@@ -2,7 +2,7 @@ import * as React from 'react'
 import {
   Animated,
   Keyboard,
-  Text,
+  Platform,
   TextInput,
   TextInputProps,
   View,
@@ -85,6 +85,7 @@ export const Input = ({
 
   // Use `defaultValue` if provided
   const [text, setText] = React.useState(textInputProps?.defaultValue ?? '')
+  const [inputHeight, setInputHeight] = React.useState(40)
   const bottomSectionOpacity = React.useRef(new Animated.Value(1)).current
   const bottomSectionHeight = React.useRef(new Animated.Value(50)).current
 
@@ -94,6 +95,11 @@ export const Input = ({
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
+        // Reset to minimum height when keyboard shows
+        if (Platform.OS === 'android') {
+          setInputHeight(40)
+        }
+
         // Delay state change to avoid jumping
         setTimeout(() => {
           setIsKeyboardVisible(true)
@@ -118,6 +124,9 @@ export const Input = ({
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
+        // Reset input height when keyboard hides
+        setInputHeight(40)
+
         // Delay state change to avoid jumping
         setTimeout(() => {
           setIsKeyboardVisible(false)
@@ -151,6 +160,14 @@ export const Input = ({
     textInputProps?.onChangeText?.(newText)
   }
 
+  const handleContentSizeChange = (event: any) => {
+    if (Platform.OS === 'android') {
+      const { height } = event.nativeEvent.contentSize
+      const newHeight = Math.max(40, Math.min(100, height + 20)) // +20 for padding
+      setInputHeight(newHeight)
+    }
+  }
+
   const handleSend = () => {
     const trimmedValue = value.trim()
 
@@ -181,6 +198,9 @@ export const Input = ({
             placeholder={l10n.inputPlaceholder}
             placeholderTextColor={`${String(theme.colors.inputText)}80`}
             underlineColorAndroid='transparent'
+            textAlignVertical={Platform.OS === 'android' ? 'top' : 'auto'}
+            scrollEnabled={Platform.OS === 'android' ? isKeyboardVisible : true}
+            onContentSizeChange={handleContentSizeChange}
             {...textInputProps}
             // Keep our implementation but allow user to use these `TextInputProps`
             style={[
@@ -188,25 +208,18 @@ export const Input = ({
               textInputProps?.style,
               {
                 color: isKeyboardVisible ? theme.colors.black : 'transparent',
+                ...(Platform.OS === 'android'
+                  ? {
+                      height: inputHeight,
+                      textAlignVertical: 'top',
+                    }
+                  : {}),
               },
             ]}
             onChangeText={handleChangeText}
             value={value}
           />
         </View>
-
-        {/* Truncated text overlay when keyboard is hidden */}
-        {!isKeyboardVisible && value && (
-          <View style={inputTextOverlay}>
-            <Text
-              style={[input, inputText]}
-              numberOfLines={1}
-              ellipsizeMode='head'
-            >
-              {value}
-            </Text>
-          </View>
-        )}
 
         {renderSendButton ? (
           renderSendButton?.({

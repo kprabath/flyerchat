@@ -20,6 +20,7 @@ export default ({
       paddingHorizontal: 16,
       paddingVertical: 16,
       marginHorizontal: 16,
+      marginBottom: 20,
     },
     input: {
       ...theme.fonts.inputTextStyle,

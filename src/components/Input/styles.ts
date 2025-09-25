@@ -1,6 +1,7 @@
 import { Platform, StyleSheet } from 'react-native'
 
 import { Theme } from '../../types'
+import { IS_ANDROID } from './Input'
 
 export default ({
   theme,
@@ -20,7 +21,7 @@ export default ({
       paddingHorizontal: 16,
       paddingVertical: 16,
       marginHorizontal: 16,
-      marginBottom: isKeyboardVisible ? 20 : 0,
+      marginBottom: isKeyboardVisible ? 20 : IS_ANDROID ? 20 : 0,
     },
     input: {
       ...theme.fonts.inputTextStyle,

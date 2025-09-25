@@ -21,7 +21,7 @@ export default ({
       paddingHorizontal: 16,
       paddingVertical: 16,
       marginHorizontal: 16,
-      marginBottom: isKeyboardVisible ? 20 : IS_ANDROID ? 20 : 0,
+      marginBottom: isKeyboardVisible || IS_ANDROID ? 20 : 0,
     },
     input: {
       ...theme.fonts.inputTextStyle,

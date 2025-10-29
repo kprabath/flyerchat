@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import * as React from 'react'
-import { ColorValue } from 'react-native'
+import { ColorValue, Platform } from 'react-native'
 import Blob from 'react-native/Libraries/Blob/Blob'
 
 import { l10n } from '../l10n'
@@ -19,6 +19,9 @@ interface DownloadTask   {
   taskId: string;
   uri: string;
 }
+
+
+export const isAndroid = ()=> Platform.OS === 'android'
 
 export interface TwilioContextType {
   getNextChatMessages?: () => Promise<any>

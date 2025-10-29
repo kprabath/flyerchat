@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 import { Theme } from '../../types'
+import { isAndroid } from '../../utils'
 
 export default ({ theme }: { theme: Theme }) =>
   StyleSheet.create({
@@ -29,7 +30,7 @@ export default ({ theme }: { theme: Theme }) =>
     emptyComponentContainer: {
       alignItems: 'center',
       marginHorizontal: 24,
-      transform: [{ scale: -1}],
+      transform: isAndroid() ? [{scale: -1}]:  [{ scaleY: -1}],
     },
     emptyComponentTitle: {
       ...theme.fonts.emptyChatPlaceholderTextStyle,

@@ -1,5 +1,17 @@
+import * as React from 'react'
+import {
+  Animated,
+  Keyboard,
+  Platform,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from 'react-native'
+
 import { MessageType } from '../../types'
-import { L10nContext, ThemeContext, unwrap, UserContext } from '../../utils'
+
+import { L10nContext, ThemeContext, UserContext, unwrap } from '../../utils'
 import {
   AttachmentButton,
   AttachmentButtonAdditionalProps,
@@ -11,14 +23,6 @@ import {
 } from '../CircularActivityIndicator'
 import { SendButton } from '../SendButton'
 import styles from './styles'
-import * as React from 'react'
-import {
-  Animated,
-  Keyboard,
-  TextInput,
-  TextInputProps,
-  View,
-} from 'react-native'
 
 export interface InputTopLevelProps {
   /** Whether attachment is uploading. Will replace attachment button with a
@@ -47,7 +51,7 @@ export interface InputAdditionalProps {
   attachmentButtonProps?: AttachmentButtonAdditionalProps
   attachmentCircularActivityIndicatorProps?: CircularActivityIndicatorProps
 }
-
+export const IS_ANDROID = Platform.OS === 'android'
 export type InputProps = InputTopLevelProps & InputAdditionalProps
 
 /** Bottom bar input component with a text input, attachment and
@@ -66,11 +70,17 @@ export const Input = ({
   const l10n = React.useContext(L10nContext)
   const theme = React.useContext(ThemeContext)
   const user = React.useContext(UserContext)
-  const { container, input, marginRight, subcontainer } = styles({ theme })
+  const [isKeyboardVisible, setIsKeyboardVisible] = React.useState(false)
+  const { container, input, marginRight, subcontainer, inputText } = styles({
+    theme,
+    isKeyboardVisible,
+  })
 
   // Use `defaultValue` if provided
   const [text, setText] = React.useState(textInputProps?.defaultValue ?? '')
-  const bottomSectionHeight = React.useRef(new Animated.Value(1)).current
+  const [inputHeight, setInputHeight] = React.useState(40)
+  const bottomSectionOpacity = React.useRef(new Animated.Value(1)).current
+  const bottomSectionHeight = React.useRef(new Animated.Value(50)).current
 
   const value = textInputProps?.value ?? text
 
@@ -78,21 +88,56 @@ export const Input = ({
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
-        Animated.timing(bottomSectionHeight, {
-          toValue: 0,
-          duration: 250,
-          useNativeDriver: false,
-        }).start()
+        // Reset to minimum height when keyboard shows
+        if (Platform.OS === 'android') {
+          setInputHeight(40)
+        }
+
+        // Delay state change to avoid jumping
+        setTimeout(() => {
+          setIsKeyboardVisible(true)
+        }, 50)
+
+        // Animate bottom section to hidden with sequential timing
+        Animated.sequence([
+          Animated.timing(bottomSectionOpacity, {
+            toValue: 0,
+            duration: 150,
+            useNativeDriver: false,
+          }),
+          Animated.timing(bottomSectionHeight, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: false,
+          }),
+        ]).start()
       }
     )
+
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        Animated.timing(bottomSectionHeight, {
-          toValue: 1,
-          duration: 250,
-          useNativeDriver: false,
-        }).start()
+        // Reset input height when keyboard hides
+        setInputHeight(40)
+
+        // Delay state change to avoid jumping
+        setTimeout(() => {
+          setIsKeyboardVisible(false)
+        }, 50)
+
+        // Animate bottom section to visible with sequential timing
+        Animated.sequence([
+          Animated.timing(bottomSectionHeight, {
+            toValue: 50,
+            duration: 200,
+            useNativeDriver: false,
+          }),
+          Animated.timing(bottomSectionOpacity, {
+            toValue: 1,
+            duration: 150,
+            useNativeDriver: false,
+          }),
+        ]).start()
       }
     )
 
@@ -106,6 +151,14 @@ export const Input = ({
     // Track local state in case `onChangeText` is provided and `value` is not
     setText(newText)
     textInputProps?.onChangeText?.(newText)
+  }
+
+  const handleContentSizeChange = (event: any) => {
+    if (IS_ANDROID) {
+      const { height } = event.nativeEvent.contentSize
+      const newHeight = Math.max(40, Math.min(100, height + 20)) // +20 for padding
+      setInputHeight(newHeight)
+    }
   }
 
   const handleSend = () => {
@@ -131,24 +184,70 @@ export const Input = ({
       ]}
     >
       <View style={{ flexDirection: 'row' }}>
-        <TextInput
-          multiline
-          placeholder={l10n.inputPlaceholder}
-          placeholderTextColor={`${String(theme.colors.inputText)}80`}
-          underlineColorAndroid='transparent'
-          {...textInputProps}
-          // Keep our implementation but allow user to use these `TextInputProps`
-          style={[input, textInputProps?.style]}
-          onChangeText={handleChangeText}
-          value={value}
-        />
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <TextInput
+            multiline
+            numberOfLines={5}
+            placeholder={l10n.inputPlaceholder}
+            placeholderTextColor={`${String(theme.colors.inputText)}80`}
+            underlineColorAndroid='transparent'
+            textAlignVertical={IS_ANDROID ? 'top' : 'auto'}
+            scrollEnabled={IS_ANDROID ? isKeyboardVisible : true}
+            onContentSizeChange={handleContentSizeChange}
+            {...textInputProps}
+            // Keep our implementation but allow user to use these `TextInputProps`
+            style={[
+              input,
+              textInputProps?.style,
+              {
+                color: isKeyboardVisible ? theme.colors.black : 'transparent',
+                ...(IS_ANDROID
+                  ? {
+                      height: inputHeight,
+                    }
+                  : {}),
+              },
+            ]}
+            onChangeText={handleChangeText}
+            value={value}
+          />
+        </View>
 
-        { renderSendButton ? renderSendButton?.({
-          isEditing: value.trim()?.length > 0,
-          handleSend,
-        }) :
-        sendButtonVisibilityMode === 'always' ||
-        (sendButtonVisibilityMode === 'editing' && user && value.trim()) ? (
+        {/* Truncated text overlay when keyboard is hidden */}
+        {!isKeyboardVisible && value && (
+          <View
+            style={[
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                pointerEvents: 'none',
+                paddingRight: 30,
+              },
+            ]}
+          >
+            <Text
+              style={[input, inputText]}
+              numberOfLines={1}
+              ellipsizeMode='head'
+            >
+              {value}
+            </Text>
+          </View>
+        )}
+
+        {renderSendButton ? (
+          renderSendButton?.({
+            isEditing: value.trim()?.length > 0,
+            handleSend,
+          })
+        ) : sendButtonVisibilityMode === 'always' ||
+          (sendButtonVisibilityMode === 'editing' && user && value.trim()) ? (
           <SendButton onPress={handleSend} />
         ) : null}
       </View>
@@ -157,11 +256,8 @@ export const Input = ({
         style={[
           subcontainer,
           {
-            height: bottomSectionHeight.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, 50],
-            }),
-            opacity: bottomSectionHeight,
+            height: bottomSectionHeight,
+            opacity: bottomSectionOpacity,
             overflow: 'hidden',
           },
         ]}

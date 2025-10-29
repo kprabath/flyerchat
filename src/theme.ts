@@ -1,5 +1,6 @@
-import { Theme } from './types'
 import { ColorValue } from 'react-native'
+
+import { Theme } from './types'
 
 // For internal usage only. Use values from theme itself.
 
@@ -20,6 +21,7 @@ export const COLORS: ColorValue[] = [
 const CHAT_BACKGROUND = '#FFFFFF'
 const INPUT_BACKGROUND = '#F0F0F0'
 const INPUT_TEXT = 'grey'
+const BLACK = '#000000'
 
 /** Dark */
 const DARK = '#1f1c38'
@@ -66,6 +68,7 @@ export const defaultTheme: Theme = {
     sentMessageDocumentIcon: NEUTRAL_7,
     userAvatarImageBackground: 'transparent',
     userAvatarNameColors: COLORS,
+    black: BLACK,
   },
   fonts: {
     dateDividerTextStyle: {

@@ -1,8 +1,15 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 import { Theme } from '../../types'
+import { IS_ANDROID } from './Input'
 
-export default ({ theme }: { theme: Theme }) =>
+export default ({
+  theme,
+  isKeyboardVisible,
+}: {
+  theme: Theme
+  isKeyboardVisible: boolean
+}) =>
   StyleSheet.create({
     subcontainer: {
       alignItems: 'center',
@@ -14,18 +21,47 @@ export default ({ theme }: { theme: Theme }) =>
       paddingHorizontal: 16,
       paddingVertical: 16,
       marginHorizontal: 16,
+      marginBottom: isKeyboardVisible || IS_ANDROID ? 20 : 0,
     },
     input: {
       ...theme.fonts.inputTextStyle,
       color: theme.colors.inputText,
       flex: 1,
-      maxHeight: 100,
-      // Fixes default paddings for Android
+      ...(Platform.OS === 'android'
+        ? {
+            minHeight: 40,
+            maxHeight: 100,
+          }
+        : {
+            maxHeight: isKeyboardVisible ? 100 : 40,
+          }),
       paddingBottom: 0,
       paddingTop: 0,
       fontFamily: 'Manrope-Regular',
     },
     marginRight: {
       marginRight: 16,
+    },
+    inputText: {
+      position: 'absolute',
+      top: Platform.OS === 'ios' ? 0 : 10,
+      left: 0,
+      right: 0,
+      color: theme.colors.black,
+      backgroundColor: 'transparent',
+      pointerEvents: 'none',
+      paddingRight: 40,
+    },
+    inputTextContainer: {
+      flexDirection: 'row',
+      position: 'relative',
+    },
+    inputTextOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      pointerEvents: 'none',
+      paddingRight: 30,
     },
   })

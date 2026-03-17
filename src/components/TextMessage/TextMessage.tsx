@@ -36,7 +36,7 @@ export interface TextMessageProps extends TextMessageTopLevelProps {
   message: MessageType.DerivedText
   messageWidth: number
   showName: boolean;
-  onDeeplinkPress?:(message: MessageType.Any) => void
+  onDeeplinkPress?:(message: MessageType.Any, url: string) => void
 }
 
 export const TextMessage = ({
@@ -76,7 +76,7 @@ export const TextMessage = ({
 
   const handleUrlPress = (url: string) => {
     if (onDeeplinkPress)  {
-      onDeeplinkPress?.(message)
+      onDeeplinkPress?.(message, url)
       return
     }
     const uri = url.toLowerCase().startsWith('http') ? url : `https://${url}`

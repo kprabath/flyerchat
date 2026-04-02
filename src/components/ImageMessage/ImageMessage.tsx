@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Image, Text, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
+import FastImage from '@d11/react-native-fast-image'
 
 import { MessageType, Size } from '../../types'
 

@@ -38,6 +38,7 @@ export default ({
       paddingBottom: 0,
       paddingTop: 0,
       fontFamily: 'Manrope-Regular',
+      fontWeight: 'normal',
     },
     marginRight: {
       marginRight: 16,

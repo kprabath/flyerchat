@@ -33,10 +33,12 @@ import {
   FlatListProps,
   GestureResponderHandlers,
   InteractionManager,
+  Keyboard,
   LayoutAnimation,
   StatusBar,
   StatusBarProps,
   Text,
+  TouchableWithoutFeedback,
   View,
   Modal,
 } from 'react-native'
@@ -480,6 +482,7 @@ export const Chat = ({
         data={chatMessages}
         inverted
         keyboardDismissMode='interactive'
+        onScrollBeginDrag={Keyboard.dismiss}
         keyExtractor={keyExtractor}
         onEndReached={handleEndReached}
         estimatedItemSize={100}

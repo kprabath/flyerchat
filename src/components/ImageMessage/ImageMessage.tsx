@@ -79,5 +79,5 @@ export const ImageMessage = React.memo(
       </View>
     )
   },
-  (a, b) => a.message.uri === b.message.uri && a.message.id === b.message.id
+  (a, b) => a.message.uri === b.message.uri && a.message.id === b.message.id && a.messageWidth === b.messageWidth
 )
